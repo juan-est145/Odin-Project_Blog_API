@@ -1,21 +1,22 @@
-import { Posts, PrismaClient } from "@prisma/client";
+import { Posts } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 
-const prisma: PrismaClient = new PrismaClient();
 
 // TO DO: Query params must allow for how many posts to search, also it needs to set a default size. Consider caching
 export async function getPostsCollection(req: Request, res: Response, next: NextFunction) {
-	const posts: Posts[] = await prisma.posts.findMany({ where: { published: true } });
-	return res.json({ posts });
+	// const posts: Posts[] = await prisma.posts.findMany({ where: { published: true } });
+	// return res.json(posts);
+	return res.json({});
 }
 
 // TO DO: Query params must allow for including comments or not. Consider caching
 export async function getPost(req: Request, res: Response, next: NextFunction) {
-	const post: Posts = await prisma.posts.findUnique({
-		where: { id: req.params.postId },
-		include: { comments: true }
-	});
-	return res.json({ post });
+	// const post: Posts = await prisma.posts.findUnique({
+	// 	where: { id: req.params.postId },
+	// 	include: { comments: true }
+	// });
+	// return res.json(post);
+	return res.json({});
 }
 
 // TO DO: Allow for creating new posts
