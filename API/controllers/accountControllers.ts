@@ -2,6 +2,9 @@ import { Users } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs"
 import queries from "#db/queries";
+import jwt from "jsonwebtoken";
+import { jwtPayload } from "#types/types.js";
+import "#auth/passport";
 
 export async function postSignIn(req : Request, res: Response, next: NextFunction) {
 	try {
@@ -23,8 +26,18 @@ export async function postSignIn(req : Request, res: Response, next: NextFunctio
 export async function postLogIn(req : Request, res: Response, next: NextFunction) {
 	// TO DO: Implement input validation
 	try {
-		
+		const payload : jwtPayload = {
+			username : req.body.username,
+			password : req.body.password,
+		}
+		const token : string = jwt.sign(payload, process.env.SECRET as string, { algorithm: "HS256", expiresIn: "14d" });
+		//res.setHeader("Authorization", `Bearer ${token}`);
+		return res.json(token);
 	} catch (error) {
 		
 	}
+}
+
+export function test(req : Request, res: Response, next: NextFunction) {
+	res.json({ message: "All good"});
 }

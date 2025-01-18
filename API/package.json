@@ -39,6 +39,7 @@
     "#controllers/*": "./controllers/*",
     "#auth/*": "./auth/*",
     "#db/*": "./db/*",
-    "#routes/*": "./routes/*"
+    "#routes/*": "./routes/*",
+    "#types/*": "./types/*"
   }
 }

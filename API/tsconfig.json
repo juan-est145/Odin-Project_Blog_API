@@ -13,6 +13,9 @@
 			],
 			"#auth/*": [
 				"./auth/*"
+			],
+			"#types/*": [
+				"./types/*"
 			]
 		},
 		// Treat files as modules even if it doesn't use import/export
