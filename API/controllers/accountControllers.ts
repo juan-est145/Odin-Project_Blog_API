@@ -25,12 +25,15 @@ export async function postSignIn(req : Request, res: Response, next: NextFunctio
 export async function postLogIn(req : Request, res: Response, next: NextFunction) {
 	// TO DO: Implement input validation
 	try {
+		const { username, password } = req.body;
+		const user : Users | null = await queries.getUsername(username);
+		if (!user || !await bcrypt.compare(password, user.password))
+			return res.status(401).json("Invalid credentials");
 		const payload : jwtPayload = {
-			username : req.body.username,
-			password : req.body.password,
+			username,
+			password,
 		}
 		const token : string = jwt.sign(payload, process.env.SECRET as string, { algorithm: "HS256", expiresIn: "14d" });
-		//res.setHeader("Authorization", `Bearer ${token}`);
 		return res.json(token);
 	} catch (error) {
 		
