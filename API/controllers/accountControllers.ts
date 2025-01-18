@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs"
 import queries from "#db/queries";
 import jwt from "jsonwebtoken";
 import { jwtPayload } from "#types/types.js";
-import "#auth/passport";
 
 export async function postSignIn(req : Request, res: Response, next: NextFunction) {
 	try {

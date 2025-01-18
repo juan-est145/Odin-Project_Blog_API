@@ -3,6 +3,7 @@ import express, { Application } from "express";
 import postRouter from "#routes/postsRouter";
 import dotenv from "dotenv";
 import accntRouter from "#routes/accountRouter";
+import "#auth/passport";
 
 // TO DO: Implement helmet and maybe a cache middleware
 // TO DO: Implement errors messages. 404 and 500. Do so with an interface object.
