@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx prisma migrate deploy && npx tsx app.ts",
     "migrate": "npx prisma migrate dev --name $npm_config_name",
     "dev": "npx tsx --watch app.ts"
