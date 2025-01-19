@@ -1,6 +1,6 @@
 import 'module-alias/register';
 import express, { Application, NextFunction, Request, Response } from "express";
-import { status } from '#types/types.js';
+import { IStatus } from '#types/types.js';
 import postRouter from "#routes/postsRouter";
 import dotenv from "dotenv";
 import accntRouter from "#routes/accountRouter";
@@ -20,7 +20,7 @@ app.use("/posts", postRouter);
 app.use("/account", accntRouter);
 
 app.use((req: Request, res: Response) => {
-	const response: status = {
+	const response: IStatus = {
 		message: `Route ${req.url} does not exist`,
 		code: 404,
 	}
@@ -28,7 +28,7 @@ app.use((req: Request, res: Response) => {
 });
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-	const response: status = {
+	const response: IStatus = {
 		message: error.message,
 		code: 500,
 	}

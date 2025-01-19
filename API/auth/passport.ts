@@ -2,7 +2,7 @@ import passport, { DoneCallback } from "passport";
 import { Strategy as JwtStrategy, StrategyOptionsWithSecret, ExtractJwt }  from "passport-jwt";
 import queries from "#db/queries";
 import { Users } from "@prisma/client";
-import { jwtPayload } from "#types/types.js";
+import { IJwtPayload } from "#types/types.js";
 import bcrypt from "bcryptjs";
 
 const optns : StrategyOptionsWithSecret = {
@@ -11,7 +11,7 @@ const optns : StrategyOptionsWithSecret = {
 	algorithms: ["HS256"],
 };
 
-passport.use("jwt", new JwtStrategy(optns, async (payload : jwtPayload, done : DoneCallback) => {
+passport.use("jwt", new JwtStrategy(optns, async (payload : IJwtPayload, done : DoneCallback) => {
 	try {
 		const user : Users | null = await queries.getUsername(payload.username);
 		if (!user)
@@ -21,6 +21,7 @@ passport.use("jwt", new JwtStrategy(optns, async (payload : jwtPayload, done : D
 			return done(null, false);
 		return done(null, user);
 	} catch (error) {
-		// TO DO: Implement catch
+		console.error(error);
+		return done(error);
 	}
 }));
