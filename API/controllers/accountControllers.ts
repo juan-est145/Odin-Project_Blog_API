@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs"
 import queries from "#db/queries";
 import jwt from "jsonwebtoken";
-import type { IJwtPayload, ISignInResp } from "#types/types.js";
+import type { IAccountReqBody, IJwtPayload, ISignInResp } from "#types/types.js";
 import { body, Result, ValidationChain, ValidationError, validationResult } from "express-validator";
 import { IsStrongPasswordOptions, MinMaxOptions, } from "express-validator/lib/options";
 
@@ -35,7 +35,7 @@ export const valLogIn: ValidationChain[] = [
 		.isStrongPassword(valPassword).withMessage("Invalid username or password"),
 ];
 
-export async function postSignIn(req: Request, res: Response, next: NextFunction) {
+export async function postSignIn(req: Request<{}, {}, IAccountReqBody>, res: Response, next: NextFunction) {
 	try {
 		const errors: Result<ValidationError> = validationResult(req);
 		if (!errors.isEmpty())
@@ -66,7 +66,7 @@ export async function postSignIn(req: Request, res: Response, next: NextFunction
 	}
 }
 
-export async function postLogIn(req: Request, res: Response, next: NextFunction) {
+export async function postLogIn(req: Request<{}, {}, IAccountReqBody>, res: Response, next: NextFunction) {
 	try {
 		const errors: Result<ValidationError> = validationResult(req);
 		if (!errors.isEmpty())

@@ -24,3 +24,8 @@ export interface IGetPostReqParams {
 export interface IGetPostReqQuery {
 	nmbOfCmments?: string,
 }
+
+export interface IAccountReqBody {
+	username: string,
+	password: string,
+}
