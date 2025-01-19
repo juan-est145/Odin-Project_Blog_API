@@ -16,3 +16,11 @@ export interface ISignInResp extends IStatus {
 	createdAt: Date,
 	role : $Enums.Roles
 }
+
+export interface IGetPostReqParams {
+	postId: string,
+}
+
+export interface IGetPostReqQuery {
+	nmbOfCmments?: number,
+}
