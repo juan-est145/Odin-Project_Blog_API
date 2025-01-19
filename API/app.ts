@@ -7,7 +7,6 @@ import accntRouter from "#routes/accountRouter";
 import "#auth/passport";
 
 // TO DO: Implement helmet and maybe a cache middleware
-// TO DO: Implement errors messages. 404 and 500. Do so with an interface object.
 // TO DO: Implement CORS.
 
 dotenv.config();

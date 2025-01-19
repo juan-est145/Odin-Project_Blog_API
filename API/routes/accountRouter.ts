@@ -5,7 +5,7 @@ import passport from "passport";
 const accntRouter: Router = Router();
 
 
-// TO DO: Implement controllers once passport is working. Also, allow becoming a poster user.
+// TO DO: Allow becoming a poster user.
 accntRouter.post("/sign-in", valSignIn, postSignIn);
 accntRouter.post("/log-in", valLogIn, postLogIn);
 accntRouter.get("/log-in/test", passport.authenticate("jwt", { session: false }), test);
