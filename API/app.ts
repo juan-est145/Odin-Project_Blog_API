@@ -1,5 +1,6 @@
 import 'module-alias/register';
-import express, { Application } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
+import { status } from '#types/types.js';
 import postRouter from "#routes/postsRouter";
 import dotenv from "dotenv";
 import accntRouter from "#routes/accountRouter";
@@ -17,5 +18,21 @@ app.disable("x-powered-by");
 
 app.use("/posts", postRouter);
 app.use("/account", accntRouter);
+
+app.use((req: Request, res: Response) => {
+	const response: status = {
+		message: `Route ${req.url} does not exist`,
+		code: 404,
+	}
+	res.status(404).json(response);
+});
+
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+	const response: status = {
+		message: error.message,
+		code: 500,
+	}
+	res.status(500).json(response);
+});
 
 app.listen(process.env.PORT, () => console.log("Server listening on port 3000"));
