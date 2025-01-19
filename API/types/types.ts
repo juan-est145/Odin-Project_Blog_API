@@ -22,5 +22,5 @@ export interface IGetPostReqParams {
 }
 
 export interface IGetPostReqQuery {
-	nmbOfCmments?: number,
+	nmbOfCmments?: string,
 }

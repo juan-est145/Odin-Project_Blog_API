@@ -29,7 +29,7 @@ export async function getPost(req: Request<IGetPostReqParams, {}, {}, IGetPostRe
 			notFound.message = "Invalid post id";
 			return errors.array()[0].msg === "Invalid route" ? res.status(404).json(notFound) : res.status(400).json(errors.array());
 		}
-		const post: Posts | null = await queries.getPost(req.params.postId, true, req.query.nmbOfCmments);
+		const post: Posts | null = await queries.getPost(req.params.postId, true, req.query.nmbOfCmments? +req.query.nmbOfCmments : undefined);
 		return post ? res.json(post) : res.status(404).json(notFound);
 	} catch (error) {
 		console.error(error);
