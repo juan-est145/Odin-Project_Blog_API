@@ -28,7 +28,7 @@ app.use((req: Request, res: Response) => {
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 	const response: IStatus = {
-		message: error.message,
+		message: "Internal server error",
 		code: 500,
 	}
 	res.status(500).json(response);

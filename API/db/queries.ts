@@ -20,17 +20,41 @@ async function postUser(username: string, password: string) {
 	}
 }
 
-async function getPost(id: string, published: boolean = true, nmbOfcmments: number = 10) {
+async function getPost(id: string, published: boolean = true, nmbOfCmments: number = 10) {
 	try {
-		nmbOfcmments = nmbOfcmments < 0 ? nmbOfcmments * -1 : nmbOfcmments;
+		nmbOfCmments = nmbOfCmments < 0 ? nmbOfCmments * -1 : nmbOfCmments;
 		const result: Posts | null = await prisma.posts.findUnique({
 			where: { id, published },
 			include: {
 				comments: {
-					take: nmbOfcmments,
+					take: nmbOfCmments,
 					orderBy: { createdAt: "desc" },
 				},
 			},
+		});
+		return (result);
+	} catch (error) {
+		throw (error);
+	}
+}
+
+async function getPosts(published: boolean = true, nmbOfPosts: number = 10) {
+	try {
+		nmbOfPosts = nmbOfPosts < 0 ? nmbOfPosts * -1 : nmbOfPosts;
+		const result: Posts[] | null = await prisma.posts.findMany({
+			where: { published },
+			take: nmbOfPosts,
+		});
+		return (result);
+	} catch (error) {
+		throw (error);
+	}
+}
+
+async function createPost(userId: number, title: string, subtitle: string | undefined = undefined, text: string, publish: boolean = false) {
+	try {
+		const result: Posts | null = await prisma.posts.create({
+			data: { userId, title, subtitle, text, published: publish }
 		});
 		return (result);
 	} catch (error) {
@@ -42,6 +66,8 @@ const queries = {
 	getUsername,
 	postUser,
 	getPost,
+	getPosts,
+	createPost,
 }
 
 export default queries;

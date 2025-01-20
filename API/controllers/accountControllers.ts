@@ -47,7 +47,7 @@ export async function postSignIn(req: Request<{}, {}, IAccountReqBody>, res: Res
 			username: newUser.username,
 			createdAt: newUser.createdAt,
 			role: newUser.role,
-		}
+		};
 		// Maybe later implement direct log in
 		return (res.json(response));
 	} catch (error) {
@@ -75,7 +75,7 @@ export async function postLogIn(req: Request<{}, {}, IAccountReqBody>, res: Resp
 		const user: Users | null = await queries.getUsername(username);
 		if (!user || !await bcrypt.compare(password, user.password))
 			return res.status(401).json("Invalid username or password");
-		const payload: IJwtPayload = { username, password };
+		const payload: IJwtPayload = { username, password, id: user.id, role: user.role };
 		const token: string = jwt.sign(payload, process.env.SECRET as string, { algorithm: "HS256", expiresIn: "14d" });
 		return res.json(token);
 	} catch (error) {

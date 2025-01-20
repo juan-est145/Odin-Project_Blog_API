@@ -1,8 +1,9 @@
 import { Posts } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import queries from "#db/queries.js";
-import { IGetPostReqParams, IGetPostReqQuery, IStatus } from "#types/types.js";
+import { IGetPostReqParams, IGetPostReqQuery, IJwtPayload, IPostPostReqBody, IStatus } from "#types/types.js";
 import { Result, ValidationChain, ValidationError, param, query, validationResult } from "express-validator";
+import jwt, { JsonWebTokenError } from "jsonwebtoken";
 
 export const getPostVal: ValidationChain[] = [
 	param("postId").isUUID().withMessage("Invalid route"),
@@ -12,9 +13,14 @@ export const getPostVal: ValidationChain[] = [
 
 // TO DO: Query params must allow for how many posts to search, also it needs to set a default size. Consider caching
 export async function getPostsCollection(req: Request, res: Response, next: NextFunction) {
-	// const posts: Posts[] = await prisma.posts.findMany({ where: { published: true } });
-	// return res.json(posts);
-	return res.json({});
+	try {
+		//Later add number of posts to retrieve to second parameter
+		const posts: Posts[] = await queries.getPosts(true);
+		return res.json(posts);
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
 }
 
 // TO DO: Consider caching
@@ -29,7 +35,7 @@ export async function getPost(req: Request<IGetPostReqParams, {}, {}, IGetPostRe
 			notFound.message = "Invalid post id";
 			return errors.array()[0].msg === "Invalid route" ? res.status(404).json(notFound) : res.status(400).json(errors.array());
 		}
-		const post: Posts | null = await queries.getPost(req.params.postId, true, req.query.nmbOfCmments? +req.query.nmbOfCmments : undefined);
+		const post: Posts | null = await queries.getPost(req.params.postId, true, req.query.nmbOfCmments ? +req.query.nmbOfCmments : undefined);
 		return post ? res.json(post) : res.status(404).json(notFound);
 	} catch (error) {
 		console.error(error);
@@ -37,9 +43,18 @@ export async function getPost(req: Request<IGetPostReqParams, {}, {}, IGetPostRe
 	}
 }
 
-// TO DO: Allow for creating new posts
-export async function postPost(req: Request, res: Response, next: NextFunction) {
-	return res.json({});
+export async function postPost(req: Request<{}, {}, IPostPostReqBody>, res: Response, next: NextFunction) {
+	try {
+		let authHeader: string | undefined = req.headers.authorization;
+		const userCred: IJwtPayload = jwt.verify(authHeader?.split(" ")[1] as string, process.env.SECRET as string) as IJwtPayload;
+		const { title, subtitle, text } = req.body;
+		// TO DO: Add a check to see if published value should be true or false
+		const post: Posts = await queries.createPost(userCred.id, title, subtitle, text);
+		return res.json(post);
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
 }
 
 // TO DO: Allow posting comments
