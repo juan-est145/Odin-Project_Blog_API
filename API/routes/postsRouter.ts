@@ -1,11 +1,14 @@
 import { Router } from "express";
 import { getPostsCollection, getPost, postPost, postComment, getPostVal } from "#controllers/postControllers";
+import passport from "passport";
 
 const postRouter: Router = Router();
 
 postRouter.get("/", getPostsCollection);
 
-// TO DO: This routes should be protected.
+// The routes below must be all protected
+postRouter.use("/", passport.authenticate("jwt", { session: false }));
+
 postRouter.post("/", postPost);
 postRouter.get("/:postId", getPostVal, getPost);
 postRouter.post("/:postId/comment", postComment);

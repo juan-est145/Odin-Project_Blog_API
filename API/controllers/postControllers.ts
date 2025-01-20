@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import queries from "#db/queries.js";
 import { IGetPostReqParams, IGetPostReqQuery, IJwtPayload, IPostPostReqBody, IStatus } from "#types/types.js";
 import { Result, ValidationChain, ValidationError, param, query, validationResult } from "express-validator";
-import jwt, { JsonWebTokenError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export const getPostVal: ValidationChain[] = [
 	param("postId").isUUID().withMessage("Invalid route"),
@@ -43,6 +43,7 @@ export async function getPost(req: Request<IGetPostReqParams, {}, {}, IGetPostRe
 	}
 }
 
+// TO DO: Add parameter validation to body and auth header
 export async function postPost(req: Request<{}, {}, IPostPostReqBody>, res: Response, next: NextFunction) {
 	try {
 		let authHeader: string | undefined = req.headers.authorization;
