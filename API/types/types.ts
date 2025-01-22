@@ -53,3 +53,8 @@ export interface IPostCommentReqParams {
 export interface IDeletePostReqParams {
 	postId: string,
 }
+
+export interface IDeleteCommentReqParams {
+	postId: string,
+	commentId: string,
+}

@@ -1,7 +1,17 @@
 import { Comments, Posts } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import queries from "#db/queries.js";
-import { IDeletePostReqParams, IGetPostReqParams, IGetPostReqQuery, IJwtPayload, IPostCommentReqBody, IPostCommentReqParams, IPostPostReqBody, IStatus } from "#types/types.js";
+import {
+	IDeleteCommentReqParams,
+	IDeletePostReqParams,
+	IGetPostReqParams,
+	IGetPostReqQuery,
+	IJwtPayload,
+	IPostCommentReqBody,
+	IPostCommentReqParams,
+	IPostPostReqBody,
+	IStatus,
+} from "#types/types.js";
 import { Result, ValidationChain, ValidationError, body, param, query, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -31,6 +41,11 @@ export const postCommentVal: ValidationChain[] = [
 
 export const deletePostVal: ValidationChain[] = [
 	param("postId").isUUID().withMessage("Invalid route"),
+];
+
+export const deleteCommentVal: ValidationChain[] = [
+	param("postId").isUUID().withMessage("Invalid post id"),
+	param("commentId").isUUID().withMessage("Invalid comment id"),
 ];
 
 // TO DO: Query params must allow for how many posts to search, also it needs to set a default size. Consider caching
@@ -105,7 +120,7 @@ export async function deletePost(req: Request<IDeletePostReqParams>, res: Respon
 		if (error instanceof PrismaClientKnownRequestError && error.code === "P2025") {
 			const invalidReq: IStatus = {
 				code: 403,
-				message : "Not authorized",
+				message: "Not authorized",
 			};
 			return res.status(403).json(invalidReq);
 		}
@@ -140,6 +155,33 @@ export async function postComment(req: Request<IPostCommentReqParams, {}, IPostC
 		const result: Comments = await queries.postComment(userCred.id, req.params.postId, req.body.text);
 		return res.json(result);
 	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+}
+
+export async function deleteComment(req: Request<IDeleteCommentReqParams>, res: Response, next: NextFunction) {
+	try {
+		const invalidReq: IStatus = {
+			code: 400,
+		}
+		const valErrors: Result<ValidationError> = validationResult(req);
+		if (!valErrors.isEmpty()) {
+			invalidReq.message = valErrors.array();
+			return res.status(400).json(invalidReq);
+		}
+		let authHeader: string | undefined = req.headers.authorization;
+		const userCred: IJwtPayload = jwt.verify(authHeader?.split(" ")[1] as string, process.env.SECRET as string) as IJwtPayload;
+		const result: Comments = await queries.deleteComment(req.params.commentId, userCred.id);
+		return res.json(result);
+	} catch (error) {
+		if (error instanceof PrismaClientKnownRequestError && error.code === "P2025") {
+			const invalidReq: IStatus = {
+				code: 403,
+				message: "Not authorized",
+			};
+			return res.status(403).json(invalidReq);
+		}
 		console.error(error);
 		next(error);
 	}

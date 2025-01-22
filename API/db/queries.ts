@@ -85,6 +85,17 @@ async function postComment(userId: number, postId: string, text: string) {
 	}
 }
 
+async function deleteComment(id: string, userId: number) {
+	try {
+		const result: Comments = await prisma.comments.delete({
+			where: { id, userId }
+		});
+		return (result);
+	} catch (error) {
+		throw (error);
+	}
+}
+
 const queries = {
 	getUsername,
 	postUser,
@@ -93,6 +104,7 @@ const queries = {
 	createPost,
 	deletePost,
 	postComment,
+	deleteComment,
 }
 
 export default queries;
