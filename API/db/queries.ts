@@ -63,6 +63,17 @@ async function createPost(userId: number, title: string, subtitle: string | unde
 	}
 }
 
+async function deletePost(id: string, userId: number) {
+	try {
+		const result: Posts | null = await prisma.posts.delete({
+			where: { id, userId }
+		});
+		return (result);
+	} catch (error) {
+		throw (error);
+	}
+}
+
 async function postComment(userId: number, postId: string, text: string) {
 	try {
 		const result: Comments = await prisma.comments.create({
@@ -80,6 +91,7 @@ const queries = {
 	getPost,
 	getPosts,
 	createPost,
+	deletePost,
 	postComment,
 }
 

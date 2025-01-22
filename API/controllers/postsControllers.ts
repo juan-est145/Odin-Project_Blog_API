@@ -1,9 +1,10 @@
 import { Comments, Posts } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import queries from "#db/queries.js";
-import { IGetPostReqParams, IGetPostReqQuery, IJwtPayload, IPostCommentReqBody, IPostCommentReqParams, IPostPostReqBody, IStatus } from "#types/types.js";
+import { IDeletePostReqParams, IGetPostReqParams, IGetPostReqQuery, IJwtPayload, IPostCommentReqBody, IPostCommentReqParams, IPostPostReqBody, IStatus } from "#types/types.js";
 import { Result, ValidationChain, ValidationError, body, param, query, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export const getPostVal: ValidationChain[] = [
 	param("postId").isUUID().withMessage("Invalid route"),
@@ -26,6 +27,10 @@ export const postCommentVal: ValidationChain[] = [
 	param("postId").isUUID().withMessage("Invalid route"),
 	body("text").trim()
 		.isLength({ min: 1, max: 8362 }).withMessage("Comment length must be between 1 and 8362 characters"),
+];
+
+export const deletePostVal: ValidationChain[] = [
+	param("postId").isUUID().withMessage("Invalid route"),
 ];
 
 // TO DO: Query params must allow for how many posts to search, also it needs to set a default size. Consider caching
@@ -77,6 +82,33 @@ export async function postPost(req: Request<{}, {}, IPostPostReqBody>, res: Resp
 		const post: Posts = await queries.createPost(userCred.id, title, subtitle, text, publish);
 		return res.json(post);
 	} catch (error) {
+		console.error(error);
+		next(error);
+	}
+}
+
+export async function deletePost(req: Request<IDeletePostReqParams>, res: Response, next: NextFunction) {
+	try {
+		const invalidReq: IStatus = {
+			code: 400,
+		}
+		const errors: Result<ValidationError> = validationResult(req);
+		if (!errors.isEmpty()) {
+			invalidReq.message = errors.array();
+			return res.status(400).json(invalidReq);
+		}
+		let authHeader: string | undefined = req.headers.authorization;
+		const userCred: IJwtPayload = jwt.verify(authHeader?.split(" ")[1] as string, process.env.SECRET as string) as IJwtPayload;
+		const result: Posts = await queries.deletePost(req.params.postId, userCred.id);
+		return (res.json(result));
+	} catch (error) {
+		if (error instanceof PrismaClientKnownRequestError && error.code === "P2025") {
+			const invalidReq: IStatus = {
+				code: 403,
+				message : "Not authorized",
+			};
+			return res.status(403).json(invalidReq);
+		}
 		console.error(error);
 		next(error);
 	}
