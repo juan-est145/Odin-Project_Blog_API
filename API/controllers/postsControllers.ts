@@ -82,16 +82,21 @@ export async function getPost(req: Request<IGetPostReqParams, {}, {}, IGetPostRe
 
 export async function postPost(req: Request<{}, {}, IPostPostReqBody>, res: Response, next: NextFunction) {
 	try {
-		const invalidBody: IStatus = {
+		const invalidReq: IStatus = {
 			code: 400,
 		}
 		const valErrors: Result<ValidationError> = validationResult(req);
 		if (!valErrors.isEmpty()) {
-			invalidBody.message = valErrors.array();
-			return res.status(400).json(invalidBody);
+			invalidReq.message = valErrors.array();
+			return res.status(400).json(invalidReq);
 		}
 		let authHeader: string | undefined = req.headers.authorization;
 		const userCred: IJwtPayload = jwt.verify(authHeader?.split(" ")[1] as string, process.env.SECRET as string) as IJwtPayload;
+		if (userCred.role !== "POSTER") {
+			invalidReq.code = 403;
+			invalidReq.message = "Not authorized";
+			return res.status(403).json(invalidReq);
+		}
 		let { title, subtitle, text } = req.body;
 		let publish = req.body.published === "true" ? true : false;
 		const post: Posts = await queries.createPost(userCred.id, title, subtitle, text, publish);
