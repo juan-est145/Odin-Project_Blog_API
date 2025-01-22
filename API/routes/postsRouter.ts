@@ -28,6 +28,5 @@ postRouter.post("/:postId/comment", postCommentVal, postComment);
 postRouter.delete("/:postId/comment/:commentId", deleteCommentVal, deleteComment);
 
 // TO DO (optional). Allow editing for posts and comments. Use jwt.verify to make sure is the author doing so
-// TO DO. Allow delete for posts and comments
 
 export default postRouter;
