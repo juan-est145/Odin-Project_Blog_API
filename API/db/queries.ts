@@ -28,7 +28,7 @@ async function getPost(id: string, published: boolean = true, nmbOfCmments: numb
 			include: {
 				comments: {
 					take: nmbOfCmments,
-					orderBy: { createdAt: "desc" },
+					orderBy: { updatedAt: "desc" },
 				},
 			},
 		});
@@ -44,6 +44,7 @@ async function getPosts(published: boolean = true, nmbOfPosts: number = 10) {
 		const result: Posts[] | null = await prisma.posts.findMany({
 			where: { published },
 			take: nmbOfPosts,
+			orderBy: { updatedAt: "desc" },
 		});
 		return (result);
 	} catch (error) {

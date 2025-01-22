@@ -2,13 +2,24 @@ import { Posts } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import queries from "#db/queries.js";
 import { IGetPostReqParams, IGetPostReqQuery, IJwtPayload, IPostPostReqBody, IStatus } from "#types/types.js";
-import { Result, ValidationChain, ValidationError, param, query, validationResult } from "express-validator";
+import { Result, ValidationChain, ValidationError, body, param, query, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 
 export const getPostVal: ValidationChain[] = [
 	param("postId").isUUID().withMessage("Invalid route"),
 	query("nmbOfCmments").optional({ values: "undefined" }).isNumeric({ no_symbols: true })
 		.withMessage("nmbOfCmments parameter must be a number"),
+];
+
+export const postPostVal: ValidationChain[] = [
+	body("title").trim()
+		.isLength({ min: 1, max: 255 }).withMessage("Title must have a length between 1 and 255 characters"),
+	body("subtitle").optional({ values: "undefined" }).trim()
+		.isLength({ min: 1, max: 255 }).withMessage("If there is a subtitle, it must have a lengtt between 1 and 255 characters"),
+	body("text").trim()
+		.isLength({ min: 1, max: 16724 }).withMessage("Text must have a length between 1 and 16724 characters"),
+	body("published").optional({ values: "undefined" }).trim()
+		.isIn(["true", "false"]).withMessage("If published field is given, it must be a string of either true or false"),
 ];
 
 // TO DO: Query params must allow for how many posts to search, also it needs to set a default size. Consider caching
@@ -46,11 +57,19 @@ export async function getPost(req: Request<IGetPostReqParams, {}, {}, IGetPostRe
 // TO DO: Add parameter validation to body and auth header
 export async function postPost(req: Request<{}, {}, IPostPostReqBody>, res: Response, next: NextFunction) {
 	try {
+		const invalidBody: IStatus = {
+			code: 400,
+		}
+		const valErrors: Result<ValidationError> = validationResult(req);
+		if (!valErrors.isEmpty()) {
+			invalidBody.message = valErrors.array();
+			return res.status(400).json(invalidBody);
+		}
 		let authHeader: string | undefined = req.headers.authorization;
 		const userCred: IJwtPayload = jwt.verify(authHeader?.split(" ")[1] as string, process.env.SECRET as string) as IJwtPayload;
-		const { title, subtitle, text } = req.body;
-		// TO DO: Add a check to see if published value should be true or false
-		const post: Posts = await queries.createPost(userCred.id, title, subtitle, text);
+		let { title, subtitle, text } = req.body;
+		let publish = req.body.published === "true" ? true : false;
+		const post: Posts = await queries.createPost(userCred.id, title, subtitle, text, publish);
 		return res.json(post);
 	} catch (error) {
 		console.error(error);

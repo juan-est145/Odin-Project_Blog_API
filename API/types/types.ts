@@ -1,5 +1,8 @@
 import { JwtPayload } from "jsonwebtoken";
 import { $Enums } from "@prisma/client"
+import { ValidationError } from "express-validator";
+
+type TMessageError = string | string[] | ValidationError[];
 
 export interface IJwtPayload extends JwtPayload {
 	username: string,
@@ -10,7 +13,7 @@ export interface IJwtPayload extends JwtPayload {
 
 export interface IStatus {
 	code: number,
-	message?: string,
+	message?: TMessageError,
 }
 
 export interface ISignInResp extends IStatus {
@@ -36,5 +39,5 @@ export interface IPostPostReqBody {
 	title: string,
 	subtitle?: string,
 	text: string,
-	published?: boolean,
+	published?: "true" | "false",
 }

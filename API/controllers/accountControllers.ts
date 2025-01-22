@@ -48,7 +48,6 @@ export async function postSignIn(req: Request<{}, {}, IAccountReqBody>, res: Res
 			createdAt: newUser.createdAt,
 			role: newUser.role,
 		};
-		// Maybe later implement direct log in
 		return (res.json(response));
 	} catch (error) {
 		if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
