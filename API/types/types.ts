@@ -41,3 +41,11 @@ export interface IPostPostReqBody {
 	text: string,
 	published?: "true" | "false",
 }
+
+export interface IPostCommentReqBody {
+	text: string
+}
+
+export interface IPostCommentReqParams {
+	postId: string,
+}

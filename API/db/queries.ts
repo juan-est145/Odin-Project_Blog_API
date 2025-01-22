@@ -1,4 +1,4 @@
-import { Posts, Users, PrismaClient } from "@prisma/client";
+import { Posts, Users, PrismaClient, Comments } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -63,12 +63,24 @@ async function createPost(userId: number, title: string, subtitle: string | unde
 	}
 }
 
+async function postComment(userId: number, postId: string, text: string) {
+	try {
+		const result: Comments = await prisma.comments.create({
+			data: { userId, postId, text }
+		});
+		return (result);
+	} catch (error) {
+		throw (error);
+	}
+}
+
 const queries = {
 	getUsername,
 	postUser,
 	getPost,
 	getPosts,
 	createPost,
+	postComment,
 }
 
 export default queries;
