@@ -1,4 +1,4 @@
-import { Posts, Users, PrismaClient, Comments } from "@prisma/client";
+import { Posts, Users, PrismaClient, Comments, $Enums } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -14,6 +14,18 @@ async function getUsername(username: string) {
 async function postUser(username: string, password: string) {
 	try {
 		const result: Users = await prisma.users.create({ data: { username, password } });
+		return (result);
+	} catch (error) {
+		throw (error);
+	}
+}
+
+async function setUserRole(role: $Enums.Roles, id: number) {
+	try {
+		const result: Users = await prisma.users.update({
+			data: { role },
+			where: { id },
+		});
 		return (result);
 	} catch (error) {
 		throw (error);
@@ -99,6 +111,7 @@ async function deleteComment(id: string, userId: number) {
 const queries = {
 	getUsername,
 	postUser,
+	setUserRole,
 	getPost,
 	getPosts,
 	createPost,

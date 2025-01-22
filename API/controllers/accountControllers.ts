@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs"
 import queries from "#db/queries";
 import jwt from "jsonwebtoken";
-import type { IAccountReqBody, IJwtPayload, ISignInResp } from "#types/types.js";
+import type { IAccountReqBody, IJwtPayload, ISignInResp, IStatus } from "#types/types.js";
 import { body, Result, ValidationChain, ValidationError, validationResult } from "express-validator";
 import { IsStrongPasswordOptions, MinMaxOptions, } from "express-validator/lib/options";
 
@@ -33,6 +33,11 @@ export const valLogIn: ValidationChain[] = [
 		.isLength(valUsername).withMessage("Invalid username or password"),
 	body("password").trim()
 		.isStrongPassword(valPassword).withMessage("Invalid username or password"),
+];
+
+export const valUpgrade: ValidationChain[] = [
+	body("passcode").trim()
+		.equals(process.env.UPGRADE_PASSCODE as string).withMessage("Invalid passcode")
 ];
 
 export async function postSignIn(req: Request<{}, {}, IAccountReqBody>, res: Response, next: NextFunction) {
@@ -83,6 +88,22 @@ export async function postLogIn(req: Request<{}, {}, IAccountReqBody>, res: Resp
 	}
 }
 
-export function test(req: Request, res: Response, next: NextFunction) {
-	res.json({ message: "All good" });
+export async function upgradeAccnt(req: Request, res: Response, next: NextFunction) {
+	try {
+		const invalidReq: IStatus = {
+			code: 403,
+		}
+		const valErrors: Result<ValidationError> = validationResult(req);
+		if (!valErrors.isEmpty()) {
+			invalidReq.message = valErrors.array();
+			return res.status(403).json(invalidReq);
+		}
+		let authHeader: string | undefined = req.headers.authorization;
+		const userCred: IJwtPayload = jwt.verify(authHeader?.split(" ")[1] as string, process.env.SECRET as string) as IJwtPayload;
+		const result: Users = await queries.setUserRole("POSTER", userCred.id);
+		return res.json(result);
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
 }
