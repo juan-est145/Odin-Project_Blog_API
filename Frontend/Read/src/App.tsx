@@ -1,14 +1,13 @@
-import { Container, Typography } from "@mui/material"
+import { Flex, Text, Button } from "@radix-ui/themes";
 
 function App() {
 
   return (
-    <>
-      <Container>
-        <Typography variant="h1">Hola caracola</Typography>
-      </Container>
-    </>
-  )
+    <Flex direction={"column"} gap={"2"}>
+      <Text>Hola caracola</Text>
+      <Button>Let's go</Button>
+    </Flex>
+  );
 }
 
 export default App
