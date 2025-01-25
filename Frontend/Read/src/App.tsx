@@ -1,13 +1,27 @@
-import { Flex, Text, Button } from "@radix-ui/themes";
+import { Flex, Text, Button, Card, Section, Heading, Box } from "@radix-ui/themes";
+import image42 from "#assets/42Logo.jpg";
 
-function App() {
+export default function App() {
 
   return (
-    <Flex direction={"column"} gap={"2"}>
-      <Text>Hola caracola</Text>
-      <Button>Let's go</Button>
-    </Flex>
+    <>
+      <Card>
+        <Flex justify={"between"} align={"center"}>
+          <Text size={"6"}>Odin Blog</Text>
+          <Button>Sign in</Button>
+        </Flex>
+      </Card>
+      <Section>
+        <Flex>
+          <Box>
+            <Heading as="h1" size={"8"}>Welcome to the Odin Blog</Heading>
+            <Text size={"6"} as="p">This is my first blog made with Reactjs as the front-end and Expressjs in the backend </Text>
+          </Box>
+          <Box>
+            <img src={image42} alt="Image with the logo of 42 Malaga" />
+          </Box>
+        </Flex>
+      </Section>
+    </>
   );
 }
-
-export default App
