@@ -7,40 +7,66 @@ import {
 	Heading,
 	Box,
 	Container,
+	ThemeProps,
+	IconButton,
+	Separator,
+	Link
 } from "@radix-ui/themes";
 import image42 from "#assets/42Logo.jpg";
 import { useThemeContext } from "#context/context";
+import { MoonIcon, SunIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
 
 export default function MainPage() {
-	const { appearance, setAppearance } = useThemeContext();
+
 	return (
 		<>
-			<Card>
-				<Flex justify={"between"} align={"center"}>
-					<Text size={"6"}>Odin Blog</Text>
-					<Box>
-						<Button onClick={() => appearance === "light" ? setAppearance("dark") : setAppearance("light")}>Theme</Button>
-						<Button size={"3"}>Sign in</Button>
-						<Button size={"3"} variant="surface">Log in</Button>
-					</Box>
-				</Flex>
-			</Card>
-			<Section>
+			<Header></Header>
+			<Section py={"8"}>
 				<Flex align={"start"}>
-					<Container size={"2"}>
-						<Box flexGrow={"1"}>
-							<Flex direction={"column"} gap={"2"}>
-								<Heading as="h1" size={"8"}>Welcome to the <Text color="teal" weight={"bold"}>Odin Blog</Text></Heading>
-								<Text size={"6"} as="p" wrap={"wrap"}>This is my first blog made with Reactjs as the front-end and Expressjs in the backend </Text>
-							</Flex>
-						</Box>
-					</Container>
+					<Box flexGrow={"1"} p={"6"}>
+						<Flex direction={"column"} gap={"2"}>
+							<Heading as="h1" size={"9"}>Welcome to the </Heading>
+							<Heading color="teal" weight={"bold"} size={"9"}>Odin Blog</Heading>
+							<Text size={"6"} as="p">
+								A blog created with a REST API on the backend and React on the front-end
+							</Text>
+							<Link href="https://github.com/juan-est145">
+							<Button variant={"surface"} size={"3"}><GitHubLogoIcon/>Github</Button>
+						</Link>
+						</Flex>	
+					</Box>
 					<Container size={"2"}>
 						<img src={image42} alt="42Malaga logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
 					</Container>
 				</Flex>
 			</Section>
+			<Separator size={"4"} />
 		</>
 	);
 }
+
+function Header() {
+	const { appearance, setAppearance } = useThemeContext();
+	function toggleAppearance(appearance: ThemeProps['appearance'], setAppearance: React.Dispatch<React.SetStateAction<ThemeProps['appearance']>>) {
+		setAppearance(appearance === "light" ? "dark" : "light");
+	}
+
+	return (
+		<Card>
+			<Flex justify={"between"} align={"center"}>
+				<Heading size={"8"}>Odin Blog</Heading>
+				<Box>
+					<Flex gap={"3"}>
+						<IconButton size={"3"} onClick={() => toggleAppearance(appearance, setAppearance)}>
+							{appearance === "light" ? <SunIcon /> : <MoonIcon />}
+						</IconButton>
+						<Button size={"3"}>Sign in</Button>
+						<Button size={"3"} variant="surface">Log in</Button>
+					</Flex>
+				</Box>
+			</Flex>
+		</Card>
+	);
+}
+
