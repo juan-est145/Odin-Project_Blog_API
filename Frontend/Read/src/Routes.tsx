@@ -1,10 +1,10 @@
 import { RouteObject } from "react-router-dom";
-import App from "./App";
+import MainPage from "#components/MainPage";
 
 const routes: RouteObject[] = [
 	{
 		path: "/",
-		element: <App/>
+		element: <MainPage/>
 	}
 ];
 
