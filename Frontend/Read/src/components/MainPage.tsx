@@ -18,29 +18,10 @@ import { MoonIcon, SunIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
 
 export default function MainPage() {
-
 	return (
 		<>
 			<Header></Header>
-			<Section py={"8"}>
-				<Flex align={"start"}>
-					<Box flexGrow={"1"} p={"6"}>
-						<Flex direction={"column"} gap={"2"}>
-							<Heading as="h1" size={"9"}>Welcome to the </Heading>
-							<Heading color="teal" weight={"bold"} size={"9"}>Odin Blog</Heading>
-							<Text size={"6"} as="p">
-								A blog created with a REST API on the backend and React on the front-end
-							</Text>
-							<Link href="https://github.com/juan-est145">
-							<Button variant={"surface"} size={"3"}><GitHubLogoIcon/>Github</Button>
-						</Link>
-						</Flex>	
-					</Box>
-					<Container size={"2"}>
-						<img src={image42} alt="42Malaga logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-					</Container>
-				</Flex>
-			</Section>
+			<Presentation></Presentation>
 			<Separator size={"4"} />
 		</>
 	);
@@ -58,8 +39,8 @@ function Header() {
 				<Heading size={"8"}>Odin Blog</Heading>
 				<Box>
 					<Flex gap={"3"}>
-						<IconButton size={"3"} onClick={() => toggleAppearance(appearance, setAppearance)}>
-							{appearance === "light" ? <SunIcon /> : <MoonIcon />}
+						<IconButton variant={"soft"} size={"3"} onClick={() => toggleAppearance(appearance, setAppearance)}>
+							{ appearance === "light" ? <SunIcon /> : <MoonIcon /> }
 						</IconButton>
 						<Button size={"3"}>Sign in</Button>
 						<Button size={"3"} variant="surface">Log in</Button>
@@ -67,6 +48,31 @@ function Header() {
 				</Box>
 			</Flex>
 		</Card>
+	);
+}
+
+function Presentation() {
+	const { accentColor } = useThemeContext();
+	return (
+		<Section py={"5"}>
+			<Flex align={"start"}>
+				<Box flexGrow={"1"} p={"6"}>
+					<Flex direction={"column"} gap={"2"}>
+						<Heading as="h1" size={"9"}>Welcome to the </Heading>
+						<Heading color={accentColor} weight={"bold"} size={"9"}>Odin Blog</Heading>
+						<Text size={"6"} as="p">
+							A blog created with a REST API on the backend and React on the front-end
+						</Text>
+						<Link href="https://github.com/juan-est145">
+							<Button variant={"surface"} size={"3"}><GitHubLogoIcon />Github</Button>
+						</Link>
+					</Flex>
+				</Box>
+				<Container size={"2"}>
+					<img src={image42} alt="42Malaga logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+				</Container>
+			</Flex>
+		</Section>
 	);
 }
 

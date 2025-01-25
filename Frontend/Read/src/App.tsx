@@ -15,10 +15,12 @@ const router = createBrowserRouter(routes);
 
 export default function App() {
   const [appearance, setAppearance] = useState<ThemeProps['appearance']>("dark");
+  const [color] = useState<ThemeProps["accentColor"]>("teal");
+  // TO DO: Try with useEffect to store appearance preference in local storage
   return (
     <>
-      <Theme accentColor="teal" grayColor="olive" scaling="95%" appearance={appearance}>
-        <ThemeContext appearance={appearance} setAppearance={setAppearance}>
+      <Theme accentColor={color} grayColor="olive" scaling="95%" appearance={appearance}>
+        <ThemeContext appearance={appearance} setAppearance={setAppearance} accentColor={color}>
           <RouterProvider router={router}></RouterProvider>
         </ThemeContext>
         <ThemePanel />
@@ -28,9 +30,9 @@ export default function App() {
 
 }
 
-function ThemeContext({ children, appearance, setAppearance }: IThemeContextChild) {
+function ThemeContext({ children, appearance, setAppearance, accentColor }: IThemeContextChild) {
   return (
-    <ThemeProvider.Provider value={{ appearance, setAppearance }}>
+    <ThemeProvider.Provider value={{ appearance, setAppearance, accentColor }}>
       {children}
     </ThemeProvider.Provider>
   );
