@@ -8,16 +8,19 @@ import { RouterProvider } from 'react-router-dom';
 import { createBrowserRouter } from 'react-router-dom';
 import routes from './Routes.tsx';
 import { useState } from "react";
+import { IThemeContextChild } from "#types/types.ts";
+import { ThemeProvider } from "#context/context.tsx";
 
 const router = createBrowserRouter(routes);
 
 export default function App() {
-  const [appearance, setApperance] = useState<ThemeProps["appearance"]>("dark");
-
+  const [appearance, setAppearance] = useState<ThemeProps['appearance']>("dark");
   return (
     <>
       <Theme accentColor="teal" grayColor="olive" scaling="95%" appearance={appearance}>
-        <RouterProvider router={router}></RouterProvider>
+        <ThemeContext appearance={appearance} setAppearance={setAppearance}>
+          <RouterProvider router={router}></RouterProvider>
+        </ThemeContext>
         <ThemePanel />
       </Theme>
     </>
@@ -25,3 +28,10 @@ export default function App() {
 
 }
 
+function ThemeContext({ children, appearance, setAppearance }: IThemeContextChild) {
+  return (
+    <ThemeProvider.Provider value={{ appearance, setAppearance }}>
+      {children}
+    </ThemeProvider.Provider>
+  );
+}
