@@ -5,6 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useState } from "react";
 
+// TO DO: For input validation use Toast
 
 export function LogIn() {
 	const [username, setUsername] = useState("");
