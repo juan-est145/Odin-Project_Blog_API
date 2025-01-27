@@ -5,7 +5,6 @@ import { PrimeReactProvider } from "primereact/api";
 const router = createBrowserRouter(routes);
 
 export default function App() {
-  // TO DO: Try with useEffect to store appearance preference in local storage
   return (
     <>
       <PrimeReactProvider>
