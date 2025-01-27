@@ -40,10 +40,12 @@ function Header() {
 				<Box>
 					<Flex gap={"3"}>
 						<IconButton variant={"soft"} size={"3"} onClick={() => toggleAppearance(appearance, setAppearance)}>
-							{ appearance === "light" ? <SunIcon /> : <MoonIcon /> }
+							{appearance === "light" ? <SunIcon /> : <MoonIcon />}
 						</IconButton>
 						<Button size={"3"}>Sign in</Button>
-						<Button size={"3"} variant="surface">Log in</Button>
+						<Link href="/log-in">
+							<Button size={"3"} variant="surface">Log in</Button>
+						</Link>
 					</Flex>
 				</Box>
 			</Flex>
