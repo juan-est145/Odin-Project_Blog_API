@@ -4,14 +4,13 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useState } from "react";
-import { useNavigate, NavigateFunction } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // TO DO: For input validation use Toast
 
 export function LogIn() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	const navigate: NavigateFunction = useNavigate();
 
 	return (
 		<>
@@ -39,9 +38,10 @@ export function LogIn() {
 								required />
 							<label htmlFor="password">Password</label>
 						</FloatLabel>
-						<span className="flex align-items-center justify-content-center gap-1">
-							Don't have an account? <Button className="p-2" link onClick={() => navigate("/sign-in")}>Sign in</Button>
+						<span className="align-self-center">
+							Don't have an account? <Link to={"/sign-in"} style={{ color: "var(--primary-color)" }}>Sign in</Link>
 						</span>
+
 						<Button className="align-self-center">Log in</Button>
 					</div>
 				</Card>
