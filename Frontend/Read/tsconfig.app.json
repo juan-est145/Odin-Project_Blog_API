@@ -18,6 +18,9 @@
       ],
       "#context/*": [
         "./src/context/*",
+      ],
+      "#primeflex/*": [
+        "./node_modules/primeflex/*",
       ]
     },
     
