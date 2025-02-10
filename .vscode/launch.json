@@ -5,6 +5,20 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "React read",
+			"request": "launch",
+			"url": "http://localhost:5173",
+			"type": "chrome",
+			"sourceMaps": true,
+			"trace": true,
+			"webRoot": "${workspaceFolder}/Frontend/Read/src",
+			"skipFiles": [
+				"<node_internals>/**",
+				// Ignore all dependencies (optional)
+				"${workspaceFolder}/Frontend/Read/node_modules/**",
+			]
+		},
+		{
 			"name": "API",
 			"type": "node",
 			"request": "launch",

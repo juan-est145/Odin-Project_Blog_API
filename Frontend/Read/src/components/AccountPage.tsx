@@ -1,16 +1,34 @@
+import axios, { AxiosResponse } from "axios";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // TO DO: For input validation use Toast
 
 export function LogIn() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const redirect = useNavigate();
+
+	async function postLogin() {
+		try {
+			const token: AxiosResponse<string, { username: string, password: string }> = await axios.post(
+				"http://localhost:3000/account/log-in",
+				{ username, password },
+				{ headers: { "Content-Type": "application/x-www-form-urlencoded" } });
+			if (token.status !== 200) // TO DO: Implement better handlers for invalid credentials
+				throw new Error("Invalid credentials");
+			localStorage.setItem("jwt", token.data);
+			redirect("/");
+		} catch (error) {
+			// Temporal meausre
+			console.error(error);
+		}
+	}
 
 	return (
 		<>
@@ -41,8 +59,7 @@ export function LogIn() {
 						<span className="align-self-center">
 							Don't have an account? <Link to={"/sign-in"} style={{ color: "var(--primary-color)" }}>Sign in</Link>
 						</span>
-
-						<Button className="align-self-center">Log in</Button>
+						<Button className="align-self-center" onClick={async () => await postLogin()}>Log in</Button>
 					</div>
 				</Card>
 			</main>

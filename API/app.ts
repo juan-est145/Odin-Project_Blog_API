@@ -5,6 +5,7 @@ import postRouter from "#routes/postsRouter";
 import dotenv from "dotenv";
 import accntRouter from "#routes/accountRouter";
 import "#auth/passport";
+import cors from "cors";
 
 // TO DO: Implement helmet and maybe a cache middleware
 // TO DO: Implement CORS.
@@ -15,6 +16,8 @@ const app: Application = express();
 app.use(express.urlencoded({ extended: true }));
 app.disable("x-powered-by");
 
+// TO DO: This is only temporary, it should later diferentiate between dev mode and prod mode
+app.use(cors());
 app.use("/posts", postRouter);
 app.use("/account", accntRouter);
 
