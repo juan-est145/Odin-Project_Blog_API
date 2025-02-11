@@ -1,5 +1,6 @@
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 
@@ -18,16 +19,34 @@ function TBStart() {
 }
 
 function TBEnd() {
+	const [loggedIn, setLogIn] = useState<boolean>(false);
+
+	useEffect(() => {
+		const jwt: string | null = localStorage.getItem("jwt");
+		if (jwt)
+			setLogIn(true);
+		else
+			setLogIn(false);
+	}, []);
+
 	return (
 		<>
 			<div className="flex gap-3">
-				<Button>Sign in</Button>
-				<Link to={localStorage.getItem("jwt") ? "/" : "/log-in"}>
-					<Button outlined>
-						Log in
-					</Button>
-				</Link>
-
+				{loggedIn ? (
+					<Button outlined onClick={() => {
+						localStorage.removeItem("jwt");
+						setLogIn(false);
+					}}>Log out</Button>
+				) : (
+					<>
+						<Button>Sign in</Button>
+						<Link to={"/log-in"}>
+							<Button outlined>
+								Log in
+							</Button>
+						</Link>
+					</>
+				)}
 			</div>
 		</>
 	);
