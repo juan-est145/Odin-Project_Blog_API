@@ -1,6 +1,6 @@
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 export default function MainPage() {
@@ -18,12 +18,16 @@ function TBStart() {
 }
 
 function TBEnd() {
-	const navigate: NavigateFunction = useNavigate();
 	return (
 		<>
 			<div className="flex gap-3">
 				<Button>Sign in</Button>
-				<Button outlined onClick={() => navigate("/log-in")}>Log in</Button>
+				<Link to={localStorage.getItem("jwt") ? "/" : "/log-in"}>
+					<Button outlined>
+						Log in
+					</Button>
+				</Link>
+
 			</div>
 		</>
 	);

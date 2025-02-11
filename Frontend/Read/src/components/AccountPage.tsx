@@ -5,10 +5,8 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { Password } from "primereact/password";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-// TO DO: For input validation use Toast
 
 export function LogIn() {
 	const [username, setUsername] = useState("");
@@ -37,6 +35,12 @@ export function LogIn() {
 			console.error(error);
 		}
 	}
+
+	useEffect(() => {
+		const token = localStorage.getItem("jwt");
+		if (token)
+			redirect("/");	
+	}, [redirect]);
 
 	return (
 		<>
