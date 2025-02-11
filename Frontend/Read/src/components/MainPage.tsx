@@ -1,13 +1,17 @@
 import { Button } from "primereact/button";
+import { Divider } from "primereact/divider";
+import { Card } from "primereact/card";
 import { Toolbar } from "primereact/toolbar";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import Logo42 from "#assets/42Logo.jpg";
 
 export default function MainPage() {
 	return (
 		<>
 			<Toolbar start={TBStart} end={TBEnd} />
+			<Divider />
+			<ImageCard />
 		</>
 	);
 }
@@ -50,4 +54,23 @@ function TBEnd() {
 			</div>
 		</>
 	);
+}
+
+function ImageCard() {
+	return (
+		<Card>
+			<div className="flex justify-content-around p-2">
+				<section>
+					<h1 className="m-1 text-5xl">Welcome to the</h1>
+					<h1 className="m-1 text-5xl" style={{ color: "var(--primary-color)" }}>Odin Blog</h1>
+					<p className="text-xl" style={{ maxWidth: "40ch" }}>A blog created with a REST API on the backend and React on the front-end</p>
+					<a href="https://github.com/juan-est145">
+						<Button label="Sumbit" icon="pi pi-github" />
+					</a>
+				</section>
+				<img src={Logo42} style={{ minHeight: "50%", maxWidth: "35%" }}></img>
+			</div>
+		</Card>
+	);
+
 }

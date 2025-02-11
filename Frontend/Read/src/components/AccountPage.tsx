@@ -37,7 +37,7 @@ export function LogIn() {
 	}
 
 	useEffect(() => {
-		const token = localStorage.getItem("jwt");
+		const token: string | null = localStorage.getItem("jwt");
 		if (token)
 			redirect("/");	
 	}, [redirect]);
