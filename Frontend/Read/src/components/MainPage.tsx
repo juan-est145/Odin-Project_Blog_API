@@ -65,7 +65,7 @@ function ImageCard() {
 					<h1 className="m-1 text-5xl" style={{ color: "var(--primary-color)" }}>Odin Blog</h1>
 					<p className="text-xl" style={{ maxWidth: "40ch" }}>A blog created with a REST API on the backend and React on the front-end</p>
 					<a href="https://github.com/juan-est145">
-						<Button label="Sumbit" icon="pi pi-github" />
+						<Button label="Github" icon="pi pi-github" />
 					</a>
 				</section>
 				<img src={Logo42} style={{ minHeight: "50%", maxWidth: "35%" }}></img>
