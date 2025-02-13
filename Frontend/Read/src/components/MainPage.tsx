@@ -5,8 +5,15 @@ import { Toolbar } from "primereact/toolbar";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Logo42 from "#assets/42Logo.jpg";
+import axios, { AxiosResponse } from "axios";
 
 export default function MainPage() {
+	const [posts, setPosts] = useState<Array>([]);
+
+	useEffect(() => {
+		const promise: Promise<AxiosResponse<any, any>> = axios.get("http://localhost:3000/posts");
+		promise.then((value) => setPosts([value]));
+	}, []);
 	return (
 		<>
 			<Toolbar start={TBStart} end={TBEnd} />
