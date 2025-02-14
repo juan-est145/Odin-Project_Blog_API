@@ -80,7 +80,11 @@ function TBEnd() {
 					}}>Log out</Button>
 				) : (
 					<>
-						<Button>Sign in</Button>
+						<Link to={"/sign-in"}>
+							<Button>
+								Sign in
+							</Button>
+						</Link>
 						<Link to={"/log-in"}>
 							<Button outlined>
 								Log in

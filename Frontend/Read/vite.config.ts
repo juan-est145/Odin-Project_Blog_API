@@ -9,7 +9,6 @@ export default defineConfig({
     alias: {
       "#assets": path.resolve(__dirname, "./src/assets"),
       "#components": path.resolve(__dirname, "./src/components"),
-      "#context": path.resolve(__dirname, "./src/context"),
       "#types": path.resolve(__dirname, "./src/types"),
       "#primeflex": path.resolve(__dirname, "./node_modules/primeflex")
     }
