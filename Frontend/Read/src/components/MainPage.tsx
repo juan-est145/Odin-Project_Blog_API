@@ -3,7 +3,7 @@ import { Divider } from "primereact/divider";
 import { Card } from "primereact/card";
 import { Toolbar } from "primereact/toolbar";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo42 from "#assets/42Logo.jpg";
 import axios, { AxiosResponse } from "axios";
 import { Posts } from "#types/types";
@@ -59,6 +59,7 @@ function TBStart() {
 
 function TBEnd() {
 	const [loggedIn, setLogIn] = useState<boolean>(false);
+	const redirect = useNavigate();
 
 	useEffect(() => {
 		const jwt: string | null = localStorage.getItem("jwt");
@@ -75,6 +76,7 @@ function TBEnd() {
 					<Button outlined onClick={() => {
 						localStorage.removeItem("jwt");
 						setLogIn(false);
+						redirect("/");
 					}}>Log out</Button>
 				) : (
 					<>

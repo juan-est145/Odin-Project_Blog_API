@@ -20,8 +20,6 @@ export function LogIn() {
 				"http://localhost:3000/account/log-in",
 				{ username, password },
 				{ headers: { "Content-Type": "application/x-www-form-urlencoded" } });
-			if (token.status !== 200) // TO DO: Implement better handlers for invalid credentials
-				throw new Error("Invalid credentials");
 			localStorage.setItem("jwt", token.data);
 			redirect("/");
 		} catch (error) {
