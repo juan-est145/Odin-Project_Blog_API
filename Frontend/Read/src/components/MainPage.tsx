@@ -16,7 +16,7 @@ export default function MainPage() {
 	useEffect(() => {
 		const promise: Promise<AxiosResponse<Posts[]>> = axios.get("http://localhost:3000/posts");
 		promise.then((value) => setPosts(value.data));
-		promise.catch(() => setPosts(null) );
+		promise.catch(() => setPosts(null));
 	}, []);
 
 	function SkelLoad() {
@@ -35,7 +35,7 @@ export default function MainPage() {
 	}
 	return (
 		<>
-			<Toolbar start={TBStart} end={TBEnd} />
+			<Header />
 			<Divider />
 			<ImageCard />
 			<Divider />
@@ -50,6 +50,13 @@ export default function MainPage() {
 		</>
 	);
 }
+
+export function Header() {
+	return (
+		<Toolbar start={TBStart} end={TBEnd} />
+	);
+}
+
 
 function TBStart() {
 	return (
@@ -116,18 +123,18 @@ function ImageCard() {
 }
 
 function PostsCard({ postInfo }: { postInfo: Posts }) {
-	//<img src={postImage} alt="An image of text" />
-	//<p className="text-overflow-ellipsis">{postInfo.text}</p>
 	const text: string = postInfo.text.substring(0, 200)
 
 	return (
 		<Card className="flex-1 flex justify-content-center align-content-center w-2rem">
-			<img src={postImage} alt="An image of text" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-			<div>
-				<h1 className="text-base text-overflow-ellipsis overflow-hidden" style={{ maxWidth: "20ch" }}>{postInfo.title}</h1>
-				<h2 className="text-base text-overflow-ellipsis">{postInfo.subtitle ? postInfo.subtitle : null}</h2>
-				<p className="text-overflow-ellipsis">{text}</p>
-			</div>
+			<Link className="no-underline text-white" to={`/post/${postInfo.id}`}>
+				<img src={postImage} alt="An image of text" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+				<div>
+					<h1 className="text-base text-overflow-ellipsis overflow-hidden" style={{ maxWidth: "20ch" }}>{postInfo.title}</h1>
+					<h2 className="text-base text-overflow-ellipsis">{postInfo.subtitle ? postInfo.subtitle : null}</h2>
+					<p className="text-overflow-ellipsis">{text}</p>
+				</div>
+			</Link>
 		</Card>
 	);
 }
