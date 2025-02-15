@@ -6,13 +6,13 @@ import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { Password } from "primereact/password";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import { ValidationError } from "express-validator";
 
 export function LogIn() {
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
-	const redirect = useNavigate();
+	const redirect: NavigateFunction = useNavigate();
 	const toast = useRef<Toast>(null);
 
 	async function postLogin() {
