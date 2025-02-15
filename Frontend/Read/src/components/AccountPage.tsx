@@ -7,6 +7,7 @@ import { Toast } from "primereact/toast";
 import { Password } from "primereact/password";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ValidationError } from "express-validator";
 
 export function LogIn() {
 	const [username, setUsername] = useState<string>("");
@@ -94,8 +95,8 @@ export function SignIn() {
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				if (error.response) {
-					const messages = error.response.data;
-					return toast.current?.show(messages.map((element: any) => {
+					const messages: Array<ValidationError> = error.response.data;
+					return toast.current?.show(messages.map((element) => {
 						return { severity: "error", summary: "Error", detail: element.msg }
 					}));
 				}
