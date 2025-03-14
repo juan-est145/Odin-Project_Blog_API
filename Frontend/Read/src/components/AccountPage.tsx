@@ -8,7 +8,7 @@ import { Password } from "primereact/password";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import { ValidationError } from "express-validator";
-import { useAuth } from "../Context";
+import { useAuth } from "#project/src/Context";
 
 export function LogIn() {
 	const [username, setUsername] = useState<string>("");

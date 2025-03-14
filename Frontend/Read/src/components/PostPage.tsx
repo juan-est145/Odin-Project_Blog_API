@@ -4,7 +4,7 @@ import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
 import { useEffect } from "react";
 import axios from "axios";
-import { useAuth } from "../Context";
+import { useAuth } from "#project/src/Context";
 
 export default function PostPage() {
 	const { loggedIn } = useAuth();

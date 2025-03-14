@@ -1,7 +1,7 @@
 import { RouteObject } from "react-router-dom";
-import MainPage from "#components/MainPage";
-import { LogIn, SignIn } from "#components/AccountPage";
-import PostPage from "#components/PostPage";
+import MainPage from "#project/src/components/MainPage";
+import { LogIn, SignIn } from "#project/src/components/AccountPage";
+import PostPage from "#project/src/components/PostPage";
 
 const routes: RouteObject[] = [
 	{

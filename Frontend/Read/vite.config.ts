@@ -7,10 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "#assets": path.resolve(__dirname, "./src/assets"),
-      "#components": path.resolve(__dirname, "./src/components"),
-      "#types": path.resolve(__dirname, "./src/types"),
-      "#primeflex": path.resolve(__dirname, "./node_modules/primeflex")
+      "#project" : path.resolve(__dirname, "."),
     }
   }
 });

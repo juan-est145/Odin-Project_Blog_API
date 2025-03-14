@@ -4,12 +4,13 @@ import { Card } from "primereact/card";
 import { Toolbar } from "primereact/toolbar";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Logo42 from "#assets/42Logo.jpg";
+import Logo42 from "#project/src/assets/42Logo.jpg"
 import axios, { AxiosResponse } from "axios";
-import { Posts } from "#types/types";
-import postImage from "#assets/pexels-pixabay-261763.jpg"
+import { Posts } from "#project/src/types/types";
+import postImage from "#project/src/assets/pexels-pixabay-261763.jpg";
+import { useAuth } from "#project/src/Context";
 import { Skeleton } from "primereact/skeleton";
-import { useAuth } from "../Context";
+
 
 export default function MainPage() {
 	const [posts, setPosts] = useState<Posts[] | null>([]);
