@@ -9,6 +9,7 @@ import axios, { AxiosResponse } from "axios";
 import { Posts } from "#types/types";
 import postImage from "#assets/pexels-pixabay-261763.jpg"
 import { Skeleton } from "primereact/skeleton";
+import { useAuth } from "../Context";
 
 export default function MainPage() {
 	const [posts, setPosts] = useState<Posts[] | null>([]);
@@ -65,16 +66,8 @@ function TBStart() {
 }
 
 function TBEnd() {
-	const [loggedIn, setLogIn] = useState<boolean>(false);
-	const redirect = useNavigate();
-
-	useEffect(() => {
-		const jwt: string | null = localStorage.getItem("jwt");
-		if (jwt)
-			setLogIn(true);
-		else
-			setLogIn(false);
-	}, []);
+	const { loggedIn, setLoggedIn } = useAuth();
+	const redirect = useNavigate()
 
 	return (
 		<>
@@ -82,7 +75,7 @@ function TBEnd() {
 				{loggedIn ? (
 					<Button outlined onClick={() => {
 						localStorage.removeItem("jwt");
-						setLogIn(false);
+						setLoggedIn(false);
 						redirect("/");
 					}}>Log out</Button>
 				) : (

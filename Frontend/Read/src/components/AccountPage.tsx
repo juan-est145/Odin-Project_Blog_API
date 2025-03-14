@@ -8,12 +8,14 @@ import { Password } from "primereact/password";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import { ValidationError } from "express-validator";
+import { useAuth } from "../Context";
 
 export function LogIn() {
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const redirect: NavigateFunction = useNavigate();
 	const toast = useRef<Toast>(null);
+	const {loggedIn, setLoggedIn } = useAuth();
 
 	async function postLogin() {
 		try {
@@ -22,6 +24,7 @@ export function LogIn() {
 				{ username, password },
 				{ headers: { "Content-Type": "application/x-www-form-urlencoded" } });
 			localStorage.setItem("jwt", token.data);
+			setLoggedIn(true);
 			redirect("/");
 		} catch (error) {
 			if (error instanceof AxiosError) {
@@ -36,10 +39,9 @@ export function LogIn() {
 	}
 
 	useEffect(() => {
-		const token: string | null = localStorage.getItem("jwt");
-		if (token)
+		if (loggedIn)
 			redirect("/");
-	}, [redirect]);
+	}, [redirect, loggedIn]);
 
 	return (
 		<>
