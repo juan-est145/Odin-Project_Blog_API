@@ -2,7 +2,7 @@ import passport, { DoneCallback } from "passport";
 import { Strategy as JwtStrategy, StrategyOptionsWithSecret, ExtractJwt }  from "passport-jwt";
 import queries from "#db/queries";
 import { Users } from "@prisma/client";
-import { IJwtPayload } from "#types/types.js";
+import { IJwtPayload } from "#types/general/types.js";
 import bcrypt from "bcryptjs";
 
 const optns : StrategyOptionsWithSecret = {

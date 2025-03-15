@@ -28,7 +28,7 @@ const compilerOptions: TJS.CompilerOptions = {
 };
 
 const typesDir = path.resolve(__dirname, "./types");
-const typeFiles = fs.readdirSync(typesDir).filter((file) => file.endsWith(".ts")).map(file => path.join(typesDir, file));
+const typeFiles = fs.readdirSync(typesDir, { recursive: true }).filter((file) => file.toString().endsWith(".ts")).map(file => path.join(typesDir, file.toString()));
 const program = TJS.getProgramFromFiles(typeFiles, compilerOptions);
 const schemas = TJS.generateSchema(program, "*")?.definitions;
 const openapiSpecification = {

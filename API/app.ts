@@ -1,6 +1,6 @@
 import "./swagger";
 import express, { Application, NextFunction, Request, Response } from "express";
-import { IStatus } from '#types/types.js';
+import { IStatus } from '#types/general/types.js';
 import postRouter from "#routes/postsRouter";
 import dotenv from "dotenv";
 import accntRouter from "#routes/accountRouter";

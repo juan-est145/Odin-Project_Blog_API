@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs"
 import queries from "#db/queries";
 import jwt from "jsonwebtoken";
-import type { IAccountReqBody, IJwtPayload, ISignInResp, IStatus } from "#types/types.js";
+import type { IAccountReqBody, IJwtPayload, ISignInResp, IStatus } from "#types/general/types.js";
 import { body, Result, ValidationChain, ValidationError, validationResult } from "express-validator";
 import { IsStrongPasswordOptions, MinMaxOptions, } from "express-validator/lib/options";
 

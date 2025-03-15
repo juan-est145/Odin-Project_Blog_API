@@ -2,16 +2,19 @@ import { Comments, Posts } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import queries from "#db/queries.js";
 import {
-	IDeleteCommentReqParams,
-	IDeletePostReqParams,
+	IJwtPayload,
+	IStatus,
+} from "#types/general/types.js";
+import {
+	IPosts, 
 	IGetPostReqParams,
 	IGetPostReqQuery,
-	IJwtPayload,
+	IPostPostReqBody,
 	IPostCommentReqBody,
 	IPostCommentReqParams,
-	IPostPostReqBody,
-	IStatus,
-} from "#types/types.js";
+	IDeleteCommentReqParams,
+	IDeletePostReqParams,
+} from "#types/posts/types.js";
 import { Result, ValidationChain, ValidationError, body, param, query, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -67,7 +70,7 @@ export const deleteCommentVal: ValidationChain[] = [
 export async function getPostsCollection(req: Request, res: Response, next: NextFunction) {
 	try {
 		// TO DO: Later add number of posts to retrieve to second parameter
-		const posts: Posts[] = await queries.getPosts(true);
+		const posts: IPosts[] = await queries.getPosts(true);
 		return res.json(posts);
 	} catch (error) {
 		console.error(error);
