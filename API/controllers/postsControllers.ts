@@ -49,6 +49,21 @@ export const deleteCommentVal: ValidationChain[] = [
 ];
 
 // TO DO: Query params must allow for how many posts to search, also it needs to set a default size. Consider caching
+/**
+ * @swagger
+ * /posts:
+ *  get:
+ *   description: Hola caracola
+ *   responses:
+ *    "200":
+ *     description: Returns a collection of posts
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: array
+ *        items:
+ *         $ref: '#/definitions/ISignInResp'
+ */
 export async function getPostsCollection(req: Request, res: Response, next: NextFunction) {
 	try {
 		// TO DO: Later add number of posts to retrieve to second parameter

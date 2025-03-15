@@ -1,3 +1,4 @@
+import "./swagger";
 import express, { Application, NextFunction, Request, Response } from "express";
 import { IStatus } from '#types/types.js';
 import postRouter from "#routes/postsRouter";
@@ -6,7 +7,7 @@ import accntRouter from "#routes/accountRouter";
 import "#auth/passport";
 import cors from "cors";
 import swaggerui from "swagger-ui-express";
-import swaggerDocs from "swagger-output.json";
+import openapiSpecification from "./swagger";
 
 // TO DO: Implement helmet and maybe a cache middleware
 // TO DO: Implement CORS.
@@ -19,7 +20,7 @@ app.disable("x-powered-by");
 
 // TO DO: This is only temporary, it should later diferentiate between dev mode and prod mode
 app.use(cors());
-app.use("/docs", swaggerui.serve, swaggerui.setup(swaggerDocs));
+app.use("/docs", swaggerui.serve, swaggerui.setup(openapiSpecification));
 app.use("/posts", postRouter);
 app.use("/account", accntRouter);
 
