@@ -1,5 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
-import { $Enums } from "@prisma/client"
+import { $Enums, Posts } from "@prisma/client"
 import { ValidationError } from "express-validator";
 
 type TMessageError = string | string[] | ValidationError[];
@@ -58,3 +58,7 @@ export interface IDeleteCommentReqParams {
 	postId: string,
 	commentId: string,
 }
+
+export interface IPosts extends Posts {
+
+};

@@ -62,7 +62,7 @@ export const deleteCommentVal: ValidationChain[] = [
  *       schema:
  *        type: array
  *        items:
- *         $ref: '#/definitions/ISignInResp'
+ *         $ref: '#/definitions/IPosts'
  */
 export async function getPostsCollection(req: Request, res: Response, next: NextFunction) {
 	try {

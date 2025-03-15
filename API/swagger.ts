@@ -1,5 +1,11 @@
-import tsj from "ts-json-schema-generator";
+import TJS from "typescript-json-schema";
 import swaggerJSDoc, { OAS3Options, } from "swagger-jsdoc";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const options: OAS3Options = {
   failOnErrors: true,
@@ -13,18 +19,21 @@ const options: OAS3Options = {
   apis: ["./routes/*.ts", "./controllers/*.ts"]
 };
 
-const config: tsj.Config = {
-  path: "./types/**.ts",
-  type: "*",
+const settings: TJS.PartialArgs = {
+  required: true,
 };
 
-const schema = tsj.createGenerator(config).createSchema(config.type);
+const compilerOptions: TJS.CompilerOptions = {
+  strictNullChecks: true,
+};
 
+const typesDir = path.resolve(__dirname, "./types");
+const typeFiles = fs.readdirSync(typesDir).filter((file) => file.endsWith(".ts")).map(file => path.join(typesDir, file));
+const program = TJS.getProgramFromFiles(typeFiles, compilerOptions);
+const schemas = TJS.generateSchema(program, "*")?.definitions;
 const openapiSpecification = {
   ...swaggerJSDoc(options),
-  definitions: schema.definitions,
+  definitions: schemas,
 };
-
-console.log(openapiSpecification);
 
 export default openapiSpecification;
