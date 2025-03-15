@@ -4,6 +4,10 @@ export interface IPosts extends Posts {
 
 };
 
+export interface IGetPostsCollecReqQuery {
+	nmbOfPosts?: number,
+};
+
 export interface IGetPostReqParams {
 	postId: string,
 }

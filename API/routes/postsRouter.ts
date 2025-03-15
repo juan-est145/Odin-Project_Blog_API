@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
 	getPostsCollection,
+	getPostsCollVal,
 	getPost,
 	postPost,
 	postComment,
@@ -16,7 +17,7 @@ import passport from "passport";
 
 const postRouter: Router = Router();
 
-postRouter.get("/", getPostsCollection);
+postRouter.get("/", getPostsCollVal, getPostsCollection);
 
 // The routes below must be all protected
 postRouter.use("/", passport.authenticate("jwt", { session: false }));

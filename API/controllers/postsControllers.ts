@@ -6,7 +6,7 @@ import {
 	IStatus,
 } from "#types/general/types.js";
 import {
-	IPosts, 
+	IPosts,
 	IGetPostReqParams,
 	IGetPostReqQuery,
 	IPostPostReqBody,
@@ -14,10 +14,16 @@ import {
 	IPostCommentReqParams,
 	IDeleteCommentReqParams,
 	IDeletePostReqParams,
+	IGetPostsCollecReqQuery,
 } from "#types/posts/types.js";
 import { Result, ValidationChain, ValidationError, body, param, query, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+
+export const getPostsCollVal: ValidationChain[] = [
+	param("nmbOfPosts").optional().isNumeric({ no_symbols: true })
+		.withMessage("Invalid parameter. Must be positive numerical value"),
+];
 
 export const getPostVal: ValidationChain[] = [
 	param("postId").isUUID().withMessage("Invalid route"),
@@ -56,7 +62,14 @@ export const deleteCommentVal: ValidationChain[] = [
  * @swagger
  * /posts:
  *  get:
- *   description: Hola caracola
+ *   description: Get a collection of the most recent posts. By default is ten, but the number can be increased
+ *   parameters:
+ *    - in: query
+ *      name: nmbOfPosts
+ *      schema:
+ *       type: integer
+ *       default: 10
+ *      description: The number of posts to return
  *   responses:
  *    "200":
  *     description: Returns a collection of posts
@@ -66,11 +79,16 @@ export const deleteCommentVal: ValidationChain[] = [
  *        type: array
  *        items:
  *         $ref: '#/definitions/IPosts'
+ *     "400":
+ *       description: Returns an error string
  */
-export async function getPostsCollection(req: Request, res: Response, next: NextFunction) {
+export async function getPostsCollection(req: Request<{}, {}, {}, IGetPostsCollecReqQuery>, res: Response, next: NextFunction) {
 	try {
 		// TO DO: Later add number of posts to retrieve to second parameter
-		const posts: IPosts[] = await queries.getPosts(true);
+		const errors: Result<ValidationError> = validationResult(req);
+		if (!errors.isEmpty())
+			return (res.status(400).json(errors.array()[0].msg));
+		const posts: IPosts[] = await queries.getPosts(true, req.query.nmbOfPosts ? +req.query.nmbOfPosts : undefined);
 		return res.json(posts);
 	} catch (error) {
 		console.error(error);
