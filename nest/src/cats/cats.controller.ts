@@ -1,9 +1,12 @@
 import { Body, Controller, Get, Param, Post, Req, Res } from "@nestjs/common";
 import { Response } from "express";
 import { CatsDto } from "./cats.dto/cats.dto";
+import { CatsService } from "./cats.service";
 
 @Controller("cats")
 export class CatsController {
+	constructor(private catsService: CatsService) {}
+
 	@Get()
 	findAll(@Req() request: Request): string {
 		return `This action returns all cats. Hello from ${request.url}`;
@@ -18,7 +21,8 @@ export class CatsController {
 	}
 	@Post()
 	create(@Res() res: Response, @Body() body: CatsDto): void {
-		console.log(body.breed);
+		this.catsService.create(body);
+		console.log(this.catsService.findAll());
 		res.status(201).send("This action creates a cat");
 	}
 }
