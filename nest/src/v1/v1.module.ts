@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { RouterModule } from "@nestjs/core";
 import { PostsModule } from "./posts/posts.module";
-import { PrismaModule } from "src/prisma/prisma.module";
+import { PrismaModule } from "src/db/db.module";
 
 @Module({
 	imports: [

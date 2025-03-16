@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { Posts } from "@prisma/client";
-import { PrismaService } from "src/prisma/prisma.service";
+import { DbService } from "src/db/db.service";
 
 @Injectable()
 export class PostsService {
-	constructor(private prisma: PrismaService) {}
+	constructor(private prisma: DbService) {}
 	async findAll(
 		published: boolean = true,
 		nmbOfPosts: number = 10,
