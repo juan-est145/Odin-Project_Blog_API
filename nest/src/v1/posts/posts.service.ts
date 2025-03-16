@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { Posts } from "@prisma/client";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { DbService } from "src/db/db.service";
+import { PostDto } from "./posts.dto";
 
 @Injectable()
 export class PostsService {
@@ -8,16 +8,16 @@ export class PostsService {
 	async findAll(
 		published: boolean = true,
 		nmbOfPosts: number = 10,
-	): Promise<Posts[] | null> {
+	): Promise<PostDto[]> {
 		try {
-			const posts: Posts[] | null = await this.prisma.posts.findMany({
+			const posts: PostDto[] = await this.prisma.posts.findMany({
 				where: { published },
 				take: nmbOfPosts,
 				orderBy: { updatedAt: "desc" },
 			});
 			return posts;
 		} catch {
-			return null;
+			throw new InternalServerErrorException();
 		}
 	}
 }
