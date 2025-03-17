@@ -4,7 +4,7 @@ import { ErrorDto, PostDto, QueryGetPostsDto } from "./posts.dto";
 import { ApiBadRequestResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Posts")
-@Controller("posts")
+@Controller()
 export class PostsController {
 	constructor(private readonly postsService: PostsService) {}
 
