@@ -1,8 +1,9 @@
-import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { PostsService } from "./posts.service";
-import { PostDto, QueryGetPostsDto } from "./posts.dto";
-import { ApiBadRequestResponse, ApiOkResponse } from "@nestjs/swagger";
+import { ErrorDto, PostDto, QueryGetPostsDto } from "./posts.dto";
+import { ApiBadRequestResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Posts")
 @Controller("posts")
 export class PostsController {
 	constructor(private readonly postsService: PostsService) {}
@@ -15,7 +16,7 @@ export class PostsController {
 		isArray: true,
 	})
 	@ApiBadRequestResponse({
-		type: BadRequestException,
+		type: ErrorDto,
 	})
 	async getPosts(@Query() query: QueryGetPostsDto): Promise<PostDto[]> {
 		return await this.postsService.findAll(true, query.nmbOfPosts);

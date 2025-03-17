@@ -33,3 +33,14 @@ export class PostDto implements Posts {
 	@ApiProperty()
 	published: boolean;
 }
+
+export class ErrorDto {
+	@ApiProperty({ example: 400 })
+	statusCode: number;
+
+	@ApiProperty({ example: "Bad Request", isArray: true })
+	message: string[];
+
+	@ApiProperty({ example: "Validation failed" })
+	error: string;
+}
