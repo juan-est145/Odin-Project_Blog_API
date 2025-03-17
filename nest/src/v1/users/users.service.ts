@@ -16,4 +16,17 @@ export class UsersService {
 			throw new InternalServerErrorException();
 		}
 	}
+	async signUser(username: string, password: string): Promise<Users> {
+		try {
+			const result: Users = await this.prisma.users.create({
+				data: {
+					username,
+					password,
+				},
+			});
+			return result;
+		} catch {
+			throw new InternalServerErrorException();
+		}
+	}
 }
