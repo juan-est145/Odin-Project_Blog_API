@@ -18,6 +18,7 @@ async function bootstrap() {
 		.setTitle("Blog API")
 		.setDescription("A REST API for a blog. Part of the Odin Project")
 		.setVersion("1.0")
+		.addBearerAuth()
 		.build();
 	SwaggerModule.setup("/docs", app, SwaggerModule.createDocument(app, config), {
 		jsonDocumentUrl: "/docs/json",
@@ -25,6 +26,7 @@ async function bootstrap() {
 	app.useGlobalPipes(new ValidationPipe(valPipeOpts));
 	await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap().catch((err) => {
 	console.error("Error during bootstrap:", err);
 });

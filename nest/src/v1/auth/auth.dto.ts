@@ -1,3 +1,4 @@
+import { $Enums } from "@prisma/client";
 import { IsString, IsStrongPassword, Length } from "class-validator";
 
 export class LogInDto {
@@ -12,4 +13,10 @@ export class LogInDto {
 		minLowercase: 1,
 	})
 	password: string;
+}
+
+export class JwtPayloadd {
+	username: string;
+	id: number;
+	role: $Enums.Roles;
 }
