@@ -33,6 +33,14 @@ export class InvalidRequestErrorDto implements IErrorResponseDto {
 	error: string;
 }
 
+export class NotFoundErrorDto implements IErrorResponseDto {
+	@ApiProperty({ example: 404 })
+	statusCode: number;
+
+	@ApiProperty({ example: "Not found" })
+	message: string;
+}
+
 export class QueryGetPostsDto {
 	@ApiProperty({
 		required: false,
@@ -47,6 +55,7 @@ export class QueryGetPostsDto {
 }
 
 export class PostsRequestParams {
+	@ApiProperty({ description: "The id of the post" })
 	@IsUUID()
 	id: string;
 }

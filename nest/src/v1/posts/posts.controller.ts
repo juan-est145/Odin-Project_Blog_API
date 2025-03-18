@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Query, UseGuards } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import {
 	InvalidRequestErrorDto,
+	NotFoundErrorDto,
 	PostDto,
 	PostsRequestParams,
 	QueryGetPostsDto,
@@ -11,6 +12,7 @@ import {
 	ApiOkResponse,
 	ApiTags,
 	ApiBearerAuth,
+	ApiNotFoundResponse,
 } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/guard/auth.guard";
 import { CommentsService } from "../comments/comments.service";
@@ -37,12 +39,26 @@ export class PostsController {
 	async getPosts(@Query() query: QueryGetPostsDto): Promise<PostDto[]> {
 		return await this.postsService.findAll(true, query.nmbOfPosts);
 	}
-	@Post(":id")
+
+	@Get(":id")
+	@ApiOkResponse({
+		description: "Returns the post that matches the provided id",
+		type: PostDto,
+	})
+	@ApiBadRequestResponse({
+		description: "Returns an invalid message if the id is not a UUID",
+		type: InvalidRequestErrorDto,
+	})
+	@ApiNotFoundResponse({
+		description: "Returns a not found message if the id does not exist",
+		type: NotFoundErrorDto,
+	})
 	async getPostId(
 		@Param() param: PostsRequestParams,
 	): Promise<PostDto | undefined> {
 		return await this.postsService.findOne(param.id);
 	}
+
 	// TO DO: Add nmbOfCmmnts query parameter
 	@Get(":id/comments")
 	@UseGuards(AuthGuard)
