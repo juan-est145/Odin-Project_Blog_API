@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from "@nestjs/common";
 import { PostsService } from "./posts.service";
-import { ErrorDto, PostDto, QueryGetPostsDto } from "./posts.dto";
+import { InvalidRequestErrorDto, PostDto, QueryGetPostsDto } from "./posts.dto";
 import { ApiBadRequestResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Posts")
@@ -16,7 +16,7 @@ export class PostsController {
 		isArray: true,
 	})
 	@ApiBadRequestResponse({
-		type: ErrorDto,
+		type: InvalidRequestErrorDto,
 	})
 	async getPosts(@Query() query: QueryGetPostsDto): Promise<PostDto[]> {
 		return await this.postsService.findAll(true, query.nmbOfPosts);

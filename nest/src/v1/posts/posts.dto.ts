@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Posts } from "@prisma/client";
 import { IsInt, IsOptional, IsPositive } from "class-validator";
+import { IErrorResponseDto } from "../v1.dto";
 
 export class QueryGetPostsDto {
 	@ApiProperty({
@@ -34,7 +35,7 @@ export class PostDto implements Posts {
 	published: boolean;
 }
 
-export class ErrorDto {
+export class InvalidRequestErrorDto implements IErrorResponseDto {
 	@ApiProperty({ example: 400 })
 	statusCode: number;
 
