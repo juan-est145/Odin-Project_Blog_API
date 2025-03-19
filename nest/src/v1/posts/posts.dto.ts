@@ -54,6 +54,19 @@ export class QueryGetPostsDto {
 	nmbOfPosts?: number;
 }
 
+export class QueryGetPostIdCommentsDto {
+	@ApiProperty({
+		required: false,
+		description:
+			"The number of comments you wished returned. It must be a positive number, and if it exceeds the total amount of comments, it returns all of them",
+		type: Number,
+	})
+	@IsOptional()
+	@IsInt()
+	@IsPositive()
+	nmbOfCmnts?: number;
+}
+
 export class PostsRequestParams {
 	@ApiProperty({ description: "The id of the post" })
 	@IsUUID()

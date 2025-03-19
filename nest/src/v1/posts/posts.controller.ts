@@ -5,6 +5,7 @@ import {
 	NotFoundErrorDto,
 	PostDto,
 	PostsRequestParams,
+	QueryGetPostIdCommentsDto,
 	QueryGetPostsDto,
 } from "./posts.dto";
 import {
@@ -59,13 +60,13 @@ export class PostsController {
 		return await this.postsService.findOne(param.id);
 	}
 
-	// TO DO: Add nmbOfCmmnts query parameter
 	@Get(":id/comments")
 	@UseGuards(AuthGuard)
 	@ApiBearerAuth()
 	async getPostComments(
 		@Param() param: PostsRequestParams,
+		@Query() query: QueryGetPostIdCommentsDto,
 	): Promise<CommentDto[]> {
-		return await this.commentsService.getAll(param.id);
+		return await this.commentsService.getAll(param.id, query.nmbOfCmnts);
 	}
 }
