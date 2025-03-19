@@ -71,6 +71,11 @@ export class LogInResDto {
 	token: string;
 }
 
+export class SignInResDto {
+	username: string;
+	statusCode: number = 201;
+}
+
 export class LogInBadRequestDto implements IErrorResponseDto {
 	@ApiProperty({ example: 400 })
 	statusCode: number;
@@ -80,6 +85,24 @@ export class LogInBadRequestDto implements IErrorResponseDto {
 
 	@ApiProperty({ example: "Bad request" })
 	error: string;
+}
+
+export class SignInBadRequestDto implements IErrorResponseDto {
+	@ApiProperty({ example: 400 })
+	statusCode: number;
+
+	@ApiProperty({ example: "Passwords do not match", isArray: true })
+	message: string[];
+
+	@ApiProperty({ example: "Bad request" })
+	error: string;
+}
+
+export class SignInConflictResponseDto implements IErrorResponseDto {
+	@ApiProperty({ example: 409 })
+	statusCode: number;
+	@ApiProperty({ example: "Username is already taken" })
+	message: string;
 }
 
 export class LogInUnauthorizedDto implements IErrorResponseDto {

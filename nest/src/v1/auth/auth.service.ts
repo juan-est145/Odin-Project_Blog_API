@@ -20,6 +20,6 @@ export class AuthService {
 	}
 	async signIn(username: string, password: string) {
 		const passwordHash: string = await bcrypt.hash(password, 10);
-		await this.users.signUser(username, passwordHash);
+		return await this.users.signUser(username, passwordHash);
 	}
 }

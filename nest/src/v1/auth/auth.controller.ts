@@ -5,13 +5,18 @@ import {
 	LogInBodyDto,
 	LogInResDto,
 	LogInUnauthorizedDto,
+	SignInBadRequestDto,
 	SignInBodyDto,
+	SignInConflictResponseDto,
+	SignInResDto,
 } from "./auth.dto";
 import {
 	ApiBadRequestResponse,
+	ApiConflictResponse,
 	ApiCreatedResponse,
 	ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { Users } from "@prisma/client";
 
 @Controller()
 export class AuthController {
@@ -35,10 +40,24 @@ export class AuthController {
 	}
 
 	@ApiCreatedResponse({
-		description: "Returns credentials",
+		description: "Returns the registered username and the status code",
+		type: SignInResDto,
+	})
+	@ApiBadRequestResponse({
+		description:
+			"Returns messages describing the invalid fields of the request",
+		type: SignInBadRequestDto,
+	})
+	@ApiConflictResponse({
+		description: "If username already exists, returns this error code",
+		type: SignInConflictResponseDto,
 	})
 	@Post("/sign-in")
 	async signIn(@Body() body: SignInBodyDto) {
-		return await this.auth.signIn(body.username, body.password);
+		const result: Users = await this.auth.signIn(body.username, body.password);
+		return {
+			username: result.username,
+			statusCode: 201,
+		} satisfies SignInResDto;
 	}
 }

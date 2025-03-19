@@ -31,7 +31,7 @@ export class UsersService {
 				error instanceof PrismaClientKnownRequestError &&
 				error.code === "P2002"
 			)
-				throw new ConflictException({ message: "Username is already taken" });
+				throw new ConflictException(undefined, "Username is already taken");
 			throw new InternalServerErrorException();
 		}
 	}
