@@ -1,6 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Posts } from "@prisma/client";
-import { IsInt, IsOptional, IsPositive, IsUUID } from "class-validator";
+import {
+	IsBooleanString,
+	IsInt,
+	IsOptional,
+	IsPositive,
+	IsUUID,
+} from "class-validator";
 import { IErrorResponseDto } from "../v1.dto";
 
 export class PostDto implements Posts {
@@ -52,6 +58,16 @@ export class QueryGetPostsDto {
 	@IsInt()
 	@IsPositive()
 	nmbOfPosts?: number;
+
+	@ApiProperty({
+		required: false,
+		description:
+			"If present returns either only either published posts or non-published posts. Leave empty if you want all of them",
+		type: Boolean,
+	})
+	@IsOptional()
+	@IsBooleanString()
+	published?: "true" | "false" | "1" | "0";
 }
 
 export class QueryGetPostIdCommentsDto {

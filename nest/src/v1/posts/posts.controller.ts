@@ -38,7 +38,11 @@ export class PostsController {
 		type: InvalidRequestErrorDto,
 	})
 	async getPosts(@Query() query: QueryGetPostsDto): Promise<PostDto[]> {
-		return await this.postsService.findAll(true, query.nmbOfPosts);
+		let published: boolean | undefined = undefined;
+		if (query.published) {
+			published = query.published === "true" || query.published === "1";
+		}
+		return await this.postsService.findAll(query.nmbOfPosts, published);
 	}
 
 	@Get(":id")

@@ -11,12 +11,13 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 export class PostsService {
 	constructor(private prisma: DbService) {}
 	async findAll(
-		published: boolean = true,
 		nmbOfPosts: number = 10,
+		published?: boolean,
 	): Promise<Posts[]> {
+		const publishSearch = published !== undefined ? { published } : {};
 		try {
 			const posts: Posts[] = await this.prisma.posts.findMany({
-				where: { published },
+				where: publishSearch,
 				take: nmbOfPosts,
 				orderBy: { updatedAt: "desc" },
 			});
