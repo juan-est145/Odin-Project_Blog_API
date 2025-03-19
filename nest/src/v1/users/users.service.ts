@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { DbService } from "src/db/db.service";
 import { Users } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { InternalServerErrorException } from "@nestjs/common";
 
 @Injectable()
@@ -25,7 +26,12 @@ export class UsersService {
 				},
 			});
 			return result;
-		} catch {
+		} catch (error) {
+			if (
+				error instanceof PrismaClientKnownRequestError &&
+				error.code === "P2002"
+			)
+				throw new ConflictException({ message: "Username is already taken" });
 			throw new InternalServerErrorException();
 		}
 	}

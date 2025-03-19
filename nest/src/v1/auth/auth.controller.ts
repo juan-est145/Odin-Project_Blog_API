@@ -5,6 +5,7 @@ import {
 	LogInBodyDto,
 	LogInResDto,
 	LogInUnauthorizedDto,
+	SignInBodyDto,
 } from "./auth.dto";
 import {
 	ApiBadRequestResponse,
@@ -31,5 +32,13 @@ export class AuthController {
 	})
 	async logIn(@Body() body: LogInBodyDto) {
 		return await this.auth.logIn(body.username, body.password);
+	}
+
+	@ApiCreatedResponse({
+		description: "Returns credentials",
+	})
+	@Post("/sign-in")
+	async signIn(@Body() body: SignInBodyDto) {
+		return await this.auth.signIn(body.username, body.password);
 	}
 }
