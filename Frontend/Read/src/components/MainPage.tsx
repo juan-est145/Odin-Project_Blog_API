@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { Card } from "primereact/card";
 import { Toolbar } from "primereact/toolbar";
-import { useEffect, useState } from "react";
+import { HtmlHTMLAttributes, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo42 from "#project/src/assets/42Logo.jpg"
 import postImage from "#project/src/assets/pexels-pixabay-261763.jpg";
@@ -13,22 +13,18 @@ import apiClient from "../ApiClient";
 
 
 export default function MainPage() {
-	const [posts, setPosts] = useState<Posts[]>([]);
+	const [posts, setPosts] = useState<Posts[] | null>([]);
 
 	useEffect(() => {
 		const promise = apiClient.GET("/v1/posts", { params: { query: { published: true }}});
 		promise.then((value) => setPosts(value.data ? value.data : []))
-			.catch(() => alert("Someting went wrong, please, try again at a later time"));
-		//const promise: Promise<AxiosResponse<Posts[]>> = axios.get("http://localhost:3000/posts");
-		// promise.then((value) => setPosts(value.data));
-		// promise.catch(() => setPosts(null));
+			.catch(() => setPosts(null));
 	}, []);
 
 	function SkelLoad() {
-		const props = {
+		const props: HtmlHTMLAttributes<HTMLDivElement> = {
 			className: "flex-1",
-			width: "10rem",
-			height: "20rem",
+			style: { width: "10rem", height: "20rem" },
 		};
 		return (
 			<>
@@ -128,6 +124,7 @@ function PostsCard({ postInfo }: { postInfo: Posts }) {
 				<img src={postImage} alt="An image of text" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
 				<div>
 					<h1 className="text-base text-overflow-ellipsis overflow-hidden" style={{ maxWidth: "20ch" }}>{postInfo.title}</h1>
+					<Divider/>
 					<h2 className="text-base text-overflow-ellipsis">{postInfo.subtitle ? postInfo.subtitle : null}</h2>
 					<p className="text-overflow-ellipsis">{text}</p>
 				</div>
