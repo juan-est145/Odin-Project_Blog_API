@@ -18,7 +18,7 @@ export default function MainPage() {
 	useEffect(() => {
 		const promise = apiClient.GET("/v1/posts", { params: { query: { published: true }}});
 		promise.then((value) => setPosts(value.data ? value.data : []))
-			.catch(() => alert("Someting went wrong, please, try again at a later tieme"));
+			.catch(() => alert("Someting went wrong, please, try again at a later time"));
 		//const promise: Promise<AxiosResponse<Posts[]>> = axios.get("http://localhost:3000/posts");
 		// promise.then((value) => setPosts(value.data));
 		// promise.catch(() => setPosts(null));

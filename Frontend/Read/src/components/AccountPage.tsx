@@ -9,6 +9,11 @@ import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import { useAuth } from "#project/src/Context";
 import apiClient from "../ApiClient";
 
+const error500Toast: ToastMessage = {
+	severity: "error",
+	summary: "Something went wrong. Please, try at a later time"
+}
+
 export function LogIn() {
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
@@ -17,19 +22,20 @@ export function LogIn() {
 	const { loggedIn, setLoggedIn } = useAuth();
 
 	async function postLogin() {
-		const { data, error } = await apiClient.POST("/v1/auth/log-in", { body: { username, password } });
-		if (data) {
-			localStorage.setItem("jwt", data.token);
-			setLoggedIn(true);
-			redirect("/");
-			return;
+		try {
+			const { data, error } = await apiClient.POST("/v1/auth/log-in", { body: { username, password } });
+			if (data) {
+				localStorage.setItem("jwt", data.token);
+				setLoggedIn(true);
+				redirect("/");
+				return;
+			}
+			const toastOpts: ToastMessage[] = [...error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage))];
+			return toast.current?.show(toastOpts);
+		} catch {
+			return toast.current?.show(error500Toast);
 		}
-		function setErrors(elements: string): ToastMessage {
-			return { severity: "error", summary: elements };
-		}
-		const toastOpts: ToastMessage[] = error.statusCode <= 500 ?
-			[...error.message.map(setErrors)] : [{ severity: "error", summary: "Something went wrong. Please, try at a later time" }];
-		return toast.current?.show(toastOpts);
+
 	}
 
 	useEffect(() => {
@@ -83,19 +89,17 @@ export function SignIn() {
 	const toast = useRef<Toast>(null);
 
 	async function postSignIn() {
-		const { data, error } = await apiClient.POST("/v1/auth/sign-in", { body: { username, password, confPass } });
-		if (data)
-			return redirect("/");
-		const clientErrors: ToastMessage[] = error.message instanceof Array? 
-			[...error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage))] : [ { severity: "error", summary: error.message } ]
-		const toastOpts: ToastMessage[] = error.statusCode <= 500 ?
-			clientErrors : [{ severity: "error", summary: "Something went wrong. Please, try at a later time" }];
-		return toast.current?.show(toastOpts);
-		// await axios.post(
-		// 	"http://localhost:3000/account/sign-in",
-		// 	{ username, password },
-		// 	{ headers: { "Content-Type": "application/x-www-form-urlencoded" } });
-		// redirect("/");
+		try {
+			const { data, error } = await apiClient.POST("/v1/auth/sign-in", { body: { username, password, confPass } });
+			if (data)
+				return redirect("/");
+			const toastOpts: ToastMessage[] = error.message instanceof Array ?
+				[...error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage))] : [{ severity: "error", summary: error.message }]
+			return toast.current?.show(toastOpts);
+		} catch {
+			return toast.current?.show(error500Toast);
+		}
+
 	}
 
 	useEffect(() => {

@@ -5,6 +5,9 @@ import { Request } from "express";
 import { IErrorResponseDto } from "../v1.dto";
 import { PasswordsMatches } from "./auth.customVal";
 
+const passwordErrMsg: string =
+	"A password that needs to have a min length of 8, and one of each of the following properties: a lowercase and uppercase letter and a special symbol";
+
 interface IAuthBody {
 	username: string;
 	password: string;
@@ -27,8 +30,7 @@ export class LogInBodyDto implements IAuthBody {
 			minLowercase: 1,
 		},
 		{
-			message:
-				"Password must have a minimum length of 8, one uppercase and lowercase letter and a special symbol",
+			message: passwordErrMsg,
 		},
 	)
 	password: string;
@@ -43,8 +45,7 @@ export class SignInBodyDto implements IAuthBody {
 	username: string;
 
 	@ApiProperty({
-		description:
-			"A password that needs to have a min length of 8, and one of each of the following properties: a lowercase and uppercase letter and a special symbol",
+		description: passwordErrMsg,
 	})
 	@IsString()
 	@IsStrongPassword(
