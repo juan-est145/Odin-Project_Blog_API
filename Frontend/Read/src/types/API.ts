@@ -160,7 +160,8 @@ export interface components {
         SignInBadRequestDto: {
             /** @example 400 */
             statusCode: number;
-            message: string[][];
+            /** @example Passwords do not match */
+            message: string[];
             /** @example Bad request */
             error: string;
         };

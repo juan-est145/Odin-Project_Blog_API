@@ -86,8 +86,10 @@ export function SignIn() {
 		const { data, error } = await apiClient.POST("/v1/auth/sign-in", { body: { username, password, confPass } });
 		if (data)
 			return redirect("/");
-		const toastOpts: ToastMessage = error.statusCode <= 500 ?
-			{ severity: "error", summary: error.message } : { severity: "error", summary: "Something went wrong. Please, try at a later time" };
+		const clientErrors: ToastMessage[] = error.message instanceof Array? 
+			[...error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage))] : [ { severity: "error", summary: error.message } ]
+		const toastOpts: ToastMessage[] = error.statusCode <= 500 ?
+			clientErrors : [{ severity: "error", summary: "Something went wrong. Please, try at a later time" }];
 		return toast.current?.show(toastOpts);
 		// await axios.post(
 		// 	"http://localhost:3000/account/sign-in",
