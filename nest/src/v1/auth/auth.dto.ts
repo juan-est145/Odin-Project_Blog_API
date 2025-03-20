@@ -13,16 +13,24 @@ interface IAuthBody {
 
 export class LogInBodyDto implements IAuthBody {
 	@IsString()
-	@Length(5, 40)
+	@Length(5, 40, {
+		message: "Username must have a min length of 5 and a max length of 40",
+	})
 	username: string;
 
 	@IsString()
-	@IsStrongPassword({
-		minLength: 8,
-		minUppercase: 1,
-		minSymbols: 1,
-		minLowercase: 1,
-	})
+	@IsStrongPassword(
+		{
+			minLength: 8,
+			minUppercase: 1,
+			minSymbols: 1,
+			minLowercase: 1,
+		},
+		{
+			message:
+				"Password must have a minimum length of 8, one uppercase and lowercase letter and a special symbol",
+		},
+	)
 	password: string;
 }
 
@@ -80,11 +88,19 @@ export class LogInBadRequestDto implements IErrorResponseDto {
 	@ApiProperty({ example: 400 })
 	statusCode: number;
 
-	@ApiProperty({ example: "Password is not strong enough", isArray: true })
+	@ApiProperty({ example: "Password is not strong enough" })
 	message: string[];
 
 	@ApiProperty({ example: "Bad request" })
 	error: string;
+}
+
+export class LogInUnauthorizedDto implements IErrorResponseDto {
+	@ApiProperty({ example: 401 })
+	statusCode: number;
+
+	@ApiProperty({ example: "Unauthorized" })
+	message: string[];
 }
 
 export class SignInBadRequestDto implements IErrorResponseDto {
@@ -103,12 +119,4 @@ export class SignInConflictResponseDto implements IErrorResponseDto {
 	statusCode: number;
 	@ApiProperty({ example: "Username is already taken" })
 	message: string;
-}
-
-export class LogInUnauthorizedDto implements IErrorResponseDto {
-	@ApiProperty({ example: 401 })
-	statusCode: number;
-
-	@ApiProperty({ example: "Unauthorized", isArray: true })
-	message: string[];
 }

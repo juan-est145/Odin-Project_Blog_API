@@ -5,20 +5,23 @@ import { Toolbar } from "primereact/toolbar";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo42 from "#project/src/assets/42Logo.jpg"
-import axios, { AxiosResponse } from "axios";
-import { Posts } from "#project/src/types/types";
 import postImage from "#project/src/assets/pexels-pixabay-261763.jpg";
 import { useAuth } from "#project/src/Context";
 import { Skeleton } from "primereact/skeleton";
+import { Posts } from "../types/types";
+import apiClient from "../ApiClient";
 
 
 export default function MainPage() {
-	const [posts, setPosts] = useState<Posts[] | null>([]);
+	const [posts, setPosts] = useState<Posts[]>([]);
 
 	useEffect(() => {
-		const promise: Promise<AxiosResponse<Posts[]>> = axios.get("http://localhost:3000/posts");
-		promise.then((value) => setPosts(value.data));
-		promise.catch(() => setPosts(null));
+		const promise = apiClient.GET("/v1/posts", { params: { query: { published: true }}});
+		promise.then((value) => setPosts(value.data ? value.data : []))
+			.catch(() => alert("Someting went wrong, please, try again at a later tieme"));
+		//const promise: Promise<AxiosResponse<Posts[]>> = axios.get("http://localhost:3000/posts");
+		// promise.then((value) => setPosts(value.data));
+		// promise.catch(() => setPosts(null));
 	}, []);
 
 	function SkelLoad() {

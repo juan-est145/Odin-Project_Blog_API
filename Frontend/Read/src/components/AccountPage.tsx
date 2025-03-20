@@ -1,41 +1,35 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
-import { Toast } from "primereact/toast";
+import { Toast, ToastMessage } from "primereact/toast";
 import { Password } from "primereact/password";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
-import { ValidationError } from "express-validator";
 import { useAuth } from "#project/src/Context";
+import apiClient from "../ApiClient";
 
 export function LogIn() {
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const redirect: NavigateFunction = useNavigate();
 	const toast = useRef<Toast>(null);
-	const {loggedIn, setLoggedIn } = useAuth();
+	const { loggedIn, setLoggedIn } = useAuth();
 
 	async function postLogin() {
-		try {
-			const token: AxiosResponse<string, { username: string, password: string }> = await axios.post(
-				"http://localhost:3000/account/log-in",
-				{ username, password },
-				{ headers: { "Content-Type": "application/x-www-form-urlencoded" } });
-			localStorage.setItem("jwt", token.data);
+		const { data, error } = await apiClient.POST("/v1/auth/log-in", { body: { username, password } });
+		if (data) {
+			localStorage.setItem("jwt", data.token);
 			setLoggedIn(true);
 			redirect("/");
-		} catch (error) {
-			if (error instanceof AxiosError) {
-				if (error.response) {
-					return toast.current?.show({ severity: "error", summary: "Error", detail: error.response.data });
-				}
-				else if (error.request)
-					return toast.current?.show({ severity: "error", summary: "Error", detail: "Something went wrong, please try at a later time" })
-			}
-			console.error(error);
+			return;
 		}
+		function setErrors(elements: string): ToastMessage {
+			return { severity: "error", summary: elements };
+		}
+		const toastOpts: ToastMessage[] = error.statusCode <= 500 ?
+			[...error.message.map(setErrors)] : [{ severity: "error", summary: "Something went wrong. Please, try at a later time" }];
+		return toast.current?.show(toastOpts);
 	}
 
 	useEffect(() => {
@@ -84,29 +78,22 @@ export function LogIn() {
 export function SignIn() {
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
+	const [confPass, setConfPass] = useState<string>("");
 	const redirect = useNavigate();
 	const toast = useRef<Toast>(null);
 
 	async function postSignIn() {
-		try {
-			await axios.post(
-				"http://localhost:3000/account/sign-in",
-				{ username, password },
-				{ headers: { "Content-Type": "application/x-www-form-urlencoded" } });
-			redirect("/");
-		} catch (error) {
-			if (error instanceof AxiosError) {
-				if (error.response) {
-					const messages: Array<ValidationError> = error.response.data;
-					return toast.current?.show(messages.map((element) => {
-						return { severity: "error", summary: "Error", detail: element.msg }
-					}));
-				}
-				else if (error.request)
-					return toast.current?.show({ severity: "error", summary: "Error", detail: "Something went wrong, please try at a later time" })
-			}
-			console.error(error);
-		}
+		const { data, error } = await apiClient.POST("/v1/auth/sign-in", { body: { username, password, confPass } });
+		if (data)
+			return redirect("/");
+		const toastOpts: ToastMessage = error.statusCode <= 500 ?
+			{ severity: "error", summary: error.message } : { severity: "error", summary: "Something went wrong. Please, try at a later time" };
+		return toast.current?.show(toastOpts);
+		// await axios.post(
+		// 	"http://localhost:3000/account/sign-in",
+		// 	{ username, password },
+		// 	{ headers: { "Content-Type": "application/x-www-form-urlencoded" } });
+		// redirect("/");
 	}
 
 	useEffect(() => {
@@ -141,6 +128,17 @@ export function SignIn() {
 								feedback={false}
 								required />
 							<label htmlFor="password">Password</label>
+						</FloatLabel>
+						<FloatLabel>
+							<Password
+								value={confPass}
+								name={"confPass"}
+								onChange={(e) => setConfPass(e.target.value)}
+								className="min-w-full" inputId="confPass"
+								toggleMask
+								feedback={false}
+								required />
+							<label htmlFor="confPass">Confirm password</label>
 						</FloatLabel>
 						<span className="align-self-center">
 							Already have an account? <Link to={"/log-in"} style={{ color: "var(--primary-color)" }}>Log in</Link>

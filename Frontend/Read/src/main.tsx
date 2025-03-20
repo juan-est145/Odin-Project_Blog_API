@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import "./ApiClient.tsx";
 import App from './App.tsx';
 import "#project/node_modules/primeflex/primeflex.css";
 import "primeicons/primeicons.css";
