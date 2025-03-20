@@ -4,22 +4,22 @@ import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
 import { useEffect } from "react";
 import { useAuth } from "#project/src/Context";
+import apiClient from "../ApiClient";
 
 export default function PostPage() {
 	const { loggedIn } = useAuth();
 	const { postId } = useParams<string>();
 
 	useEffect(() => {
-		if (!loggedIn)
-			return;
-		const promise = axios.get(`http://localhost:3000/posts/${postId}?nmbOfCmments=15`);
-		promise.then((value) => console.log(value));
+		const promise = apiClient.GET("/v1/posts/{id}", { params: { path: { id: postId as string } } })
+		promise.then((value) => console.log(value))
+			.catch(() => alert("Something went wrong"));
 	}, [postId, loggedIn]);
-	
+
 	return (
 		<>
 			<Header></Header>
-			<Divider/>
+			<Divider />
 			<Card>
 				<h1>Esto ha tirado, estamos en {postId}</h1>
 			</Card>
