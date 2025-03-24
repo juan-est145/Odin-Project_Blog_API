@@ -16,7 +16,7 @@ export default function MainPage() {
 	const [posts, setPosts] = useState<Posts[] | null>([]);
 
 	useEffect(() => {
-		const promise = apiClient.GET("/v1/posts", { params: { query: { published: true }}});
+		const promise = apiClient.GET("/v1/posts", { params: { query: { published: true } } });
 		promise.then((value) => setPosts(value.data ? value.data : []))
 			.catch(() => setPosts(null));
 	}, []);
@@ -124,7 +124,7 @@ function PostsCard({ postInfo }: { postInfo: Posts }) {
 				<img src={postImage} alt="An image of text" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
 				<div>
 					<h1 className="text-base text-overflow-ellipsis overflow-hidden" style={{ maxWidth: "20ch" }}>{postInfo.title}</h1>
-					<Divider/>
+					<Divider />
 					<h2 className="text-base text-overflow-ellipsis">{postInfo.subtitle ? postInfo.subtitle : null}</h2>
 					<p className="text-overflow-ellipsis">{text}</p>
 				</div>
