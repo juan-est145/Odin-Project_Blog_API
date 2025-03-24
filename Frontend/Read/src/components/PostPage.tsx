@@ -35,7 +35,7 @@ function ContentArea({ post }: { post: Posts | undefined }) {
 				<main className="flex flex-column">
 					<h1 className="text-primary underline text-5xl m-0">{post?.title}</h1>
 					<h3 className="text-3xl">{post?.subtitle}</h3>
-					<p className="align-self-center text-lg" style={{ width: "100ch",  textAlign: "justify", textJustify: "inter-word" }}>{post?.text}</p>
+					<p className="align-self-center text-lg" style={{ width: "100ch", textAlign: "justify", textJustify: "inter-word" }}>{post?.text}</p>
 				</main>
 			</Card>
 		</>
