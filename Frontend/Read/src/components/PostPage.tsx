@@ -31,11 +31,11 @@ export default function PostPage() {
 function ContentArea({ post }: { post: Posts | undefined }) {
 	return (
 		<>
-			<Card className="p-4">
+			<Card className="px-8">
 				<main className="flex flex-column">
 					<h1 className="text-primary underline text-5xl m-0">{post?.title}</h1>
 					<h3 className="text-3xl">{post?.subtitle}</h3>
-					<p className="align-self-center text-center 70" style={{ width: "80ch" }}>{post?.text}</p>
+					<p className="align-self-center text-lg" style={{ width: "100ch",  textAlign: "justify", textJustify: "inter-word" }}>{post?.text}</p>
 				</main>
 			</Card>
 		</>
