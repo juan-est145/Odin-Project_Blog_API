@@ -7,6 +7,8 @@ import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { MenuItem } from "primereact/menuitem";
 import { TabMenu } from "primereact/tabmenu";
+import { Editor } from "primereact/editor";
+import "#project/src/assets/custom-quill.css";
 
 export default function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
 	return (
@@ -16,7 +18,7 @@ export default function CommentSection({ id, loggedIn }: { id: string, loggedIn:
 				{
 					loggedIn ?
 						<>
-							<CommentTabMenu id={id}/>
+							<CommentTabMenu id={id} />
 						</>
 						:
 						<h1 className="text-center">
@@ -37,13 +39,13 @@ function CommentTabMenu({ id }: { id: string }) {
 		{ label: "Comments", icon: "pi pi-comments" },
 	];
 	const components: JSX.Element[] = [
-		<CommentEditor/>,
-		<CommentList id={id}/>,
+		<CommentEditor />,
+		<CommentList id={id} />,
 	];
 
 	return (
 		<>
-			<TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}/>
+			<TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)} />
 			{components[activeIndex]}
 		</>
 	);
@@ -102,9 +104,17 @@ function Comment({ data }: { data: Comments }) {
 }
 
 function CommentEditor() {
+	const [text, setText] = useState<string>("");
 	return (
 		<>
-			<h1>This would be the editor</h1>
+			<section className="flex flex-column gap-2">
+				<Editor
+				value={text}
+				onTextChange={(e) => setText(e.htmlValue as string)}
+				style={{ minHeight: "300px" }}
+				></Editor>
+				<Button className="align-self-center">Sumbit</Button>
+			</section>
 		</>
 	);
 }
