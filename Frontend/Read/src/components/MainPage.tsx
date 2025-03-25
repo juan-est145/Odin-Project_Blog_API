@@ -61,7 +61,11 @@ export function Header() {
 
 function TBStart() {
 	return (
-		<h1 className="m-0">Odin Blog</h1>
+		<>
+				<h1 className="m-0">
+					<Link to={"/"} className="no-underline text-white">Odin Blog</Link>
+				</h1>
+		</>
 	);
 }
 
