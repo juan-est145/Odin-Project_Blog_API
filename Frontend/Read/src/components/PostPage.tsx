@@ -73,19 +73,37 @@ function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
 			return;
 		const promise = apiClient.GET("/v1/posts/{id}/comments", { params: { path: { id }, query: { nmbOfCmnts: nmbOfCmnts } } });
 		promise.then((value) => setComments(value.data))
-			.catch(() => alert("Error fetching comments"))
+			.catch(() => alert("Error fetching comments"));
 	}, [id, loggedIn, nmbOfCmnts]);
 
 	return (
 		<>
 			<Divider />
 			<Card>
-				{ loggedIn? <h1></h1> : 
-				<h1 className="text-center">
-					<Link to={"/sign-in"} className="text-primary">Sign in </Link> 
-					or
-					<Link to={"/log-in"} className="text-primary"> log in </Link> in order to see and post comments</h1>}
+				{
+					loggedIn ?
+						comments?.map((element) => (
+							<Comment key={element.id} data={element} />
+						))
+						:
+						<h1 className="text-center">
+							<Link to={"/sign-in"} className="text-primary">Sign in </Link>
+							or
+							<Link to={"/log-in"} className="text-primary"> log in </Link> in order to see and post comments
+						</h1>
+				}
 			</Card>
+		</>
+	);
+}
+
+function Comment({ data }: { data: Comments }) {
+	return (
+		<>
+			<h3>{data.username}</h3>
+			<span>{data.updatedAt}</span>
+			<p style={{ width: "100ch", textAlign: "justify", textJustify: "inter-word" }}>{data.text}</p>
+			<Divider />
 		</>
 	);
 }
