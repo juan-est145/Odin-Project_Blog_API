@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "#project/src/Context";
 import apiClient from "../ApiClient";
 import { Posts } from "../types/types";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export default function PostPage() {
 	const { loggedIn } = useAuth();
@@ -31,6 +32,14 @@ export default function PostPage() {
 function ContentArea({ post }: { post: Posts | undefined }) {
 	return (
 		<>
+			{post ? <Post post={post} /> : <Spinner />}
+		</>
+	);
+}
+
+function Post({ post }: { post: Posts }) {
+	return (
+		<>
 			<Card className="px-8">
 				<main className="flex flex-column">
 					<h1 className="text-primary underline text-5xl m-0">{post?.title}</h1>
@@ -38,6 +47,18 @@ function ContentArea({ post }: { post: Posts | undefined }) {
 					<p className="align-self-center text-lg" style={{ width: "100ch", textAlign: "justify", textJustify: "inter-word" }}>{post?.text}</p>
 				</main>
 			</Card>
+		</>
+	);
+
+}
+
+function Spinner() {
+	return (
+		<>
+			<div className="flex flex-column align-items-center">
+				<h1 className="text-6xl">Loading</h1>
+				<ProgressSpinner strokeWidth="5"></ProgressSpinner>
+			</div>
 		</>
 	);
 }
