@@ -71,6 +71,18 @@ export class PostsController {
 		@Param() param: PostsRequestParams,
 		@Query() query: QueryGetPostIdCommentsDto,
 	): Promise<CommentDto[]> {
-		return await this.commentsService.getAll(param.id, query.nmbOfCmnts);
+		const comments = await this.commentsService.getAll(
+			param.id,
+			query.nmbOfCmnts,
+		);
+		return comments.map((element) => ({
+			id: element.id,
+			userId: element.userId,
+			postId: element.postId,
+			text: element.text,
+			createdAt: element.createdAt,
+			updatedAt: element.updatedAt,
+			username: element.Users.username,
+		}));
 	}
 }

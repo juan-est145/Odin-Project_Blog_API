@@ -122,6 +122,7 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            username: string;
         };
         LogInBodyDto: {
             username: string;

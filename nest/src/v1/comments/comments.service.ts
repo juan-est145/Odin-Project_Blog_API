@@ -9,6 +9,7 @@ export class CommentsService {
 			return await this.prisma.comments.findMany({
 				where: { postId },
 				take: nmbOfCmmnts,
+				include: { Users: { select: { username: true } } },
 			});
 		} catch {
 			throw new InternalServerErrorException();

@@ -1,17 +1,17 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Header } from "./MainPage";
 import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
 import { useEffect, useState } from "react";
 import { useAuth } from "#project/src/Context";
 import apiClient from "../ApiClient";
-import { Posts } from "../types/types";
+import { Comments, Posts } from "../types/types";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 export default function PostPage() {
 	const { loggedIn } = useAuth();
 	const { postId } = useParams<string>();
-	const [post, setPosts] = useState<Posts | undefined>(undefined);
+	const [post, setPosts] = useState<Posts>();
 
 	useEffect(() => {
 		const promise = apiClient.GET("/v1/posts/{id}", { params: { path: { id: postId as string } } })
@@ -24,6 +24,7 @@ export default function PostPage() {
 			<Header></Header>
 			<Divider />
 			<ContentArea post={post}></ContentArea>
+			<CommentSection id={postId as string} loggedIn={loggedIn}></CommentSection>
 			<Divider />
 		</>
 	);
@@ -59,6 +60,32 @@ function Spinner() {
 				<h1 className="text-6xl">Loading</h1>
 				<ProgressSpinner strokeWidth="5"></ProgressSpinner>
 			</div>
+		</>
+	);
+}
+
+function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
+	const [comments, setComments] = useState<Comments[]>();
+	const [nmbOfCmnts, setNmbOfCmnts] = useState<number>(10);
+
+	useEffect(() => {
+		if (!loggedIn)
+			return;
+		const promise = apiClient.GET("/v1/posts/{id}/comments", { params: { path: { id }, query: { nmbOfCmnts: nmbOfCmnts } } });
+		promise.then((value) => setComments(value.data))
+			.catch(() => alert("Error fetching comments"))
+	}, [id, loggedIn, nmbOfCmnts]);
+
+	return (
+		<>
+			<Divider />
+			<Card>
+				{ loggedIn? <h1></h1> : 
+				<h1 className="text-center">
+					<Link to={"/sign-in"} className="text-primary">Sign in </Link> 
+					or
+					<Link to={"/log-in"} className="text-primary"> log in </Link> in order to see and post comments</h1>}
+			</Card>
 		</>
 	);
 }

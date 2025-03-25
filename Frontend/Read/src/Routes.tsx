@@ -8,7 +8,7 @@ const routes: RouteObject[] = [
 	{
 		path: "/",
 		element: <MainPage/>,
-		errorElement: <ErrorPage/>,
+		errorElement: <ErrorPage/>
 	},
 	{
 		path: "/log-in",
