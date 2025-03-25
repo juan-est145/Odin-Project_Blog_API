@@ -7,6 +7,7 @@ import { useAuth } from "#project/src/Context";
 import apiClient from "../ApiClient";
 import { Comments, Posts } from "../types/types";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Button } from "primereact/button";
 
 export default function PostPage() {
 	const { loggedIn } = useAuth();
@@ -15,7 +16,10 @@ export default function PostPage() {
 
 	useEffect(() => {
 		const promise = apiClient.GET("/v1/posts/{id}", { params: { path: { id: postId as string } } })
-		promise.then((value) => setPosts(value.data))
+		promise.then((value) => {
+			console.log(value.data);
+			setPosts(value.data);
+		})
 			.catch(() => alert("Something went wrong"));
 	}, [postId, loggedIn]);
 
@@ -65,14 +69,18 @@ function Spinner() {
 }
 
 function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
-	const [comments, setComments] = useState<Comments[]>();
+	const [comments, setComments] = useState<Comments[] | []>();
 	const [nmbOfCmnts, setNmbOfCmnts] = useState<number>(10);
+	const [buttonLoad, setBtnLoad] = useState<boolean>(true);
 
 	useEffect(() => {
 		if (!loggedIn)
 			return;
 		const promise = apiClient.GET("/v1/posts/{id}/comments", { params: { path: { id }, query: { nmbOfCmnts: nmbOfCmnts } } });
-		promise.then((value) => setComments(value.data))
+		promise.then((value) => {
+			setComments(value.data)
+			setBtnLoad(false);
+		})
 			.catch(() => alert("Error fetching comments"));
 	}, [id, loggedIn, nmbOfCmnts]);
 
@@ -82,9 +90,24 @@ function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
 			<Card>
 				{
 					loggedIn ?
-						comments?.map((element) => (
-							<Comment key={element.id} data={element} />
-						))
+						<>
+							{
+								comments?.map((element) => (
+									<Comment key={element.id} data={element} />
+								))
+							}
+							{
+								comments && comments.length > 0 ? 
+								<Button 
+								loading={buttonLoad} 
+								onClick={() => {
+									setBtnLoad(true)
+									setNmbOfCmnts(nmbOfCmnts + 5);
+								}}>Load more comments</Button> 
+								: 
+								null
+							}
+						</>
 						:
 						<h1 className="text-center">
 							<Link to={"/sign-in"} className="text-primary">Sign in </Link>
@@ -98,10 +121,16 @@ function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
 }
 
 function Comment({ data }: { data: Comments }) {
+	const formattedDate = new Intl.DateTimeFormat(navigator.language, {
+		day: "2-digit",
+		month: "2-digit",
+		year: "numeric",
+	}).format(new Date(data.updatedAt));
+
 	return (
 		<>
 			<h3>{data.username}</h3>
-			<span>{data.updatedAt}</span>
+			<span>{formattedDate}</span>
 			<p style={{ width: "100ch", textAlign: "justify", textJustify: "inter-word" }}>{data.text}</p>
 			<Divider />
 		</>
