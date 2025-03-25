@@ -1,13 +1,13 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Header } from "./MainPage";
 import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "#project/src/Context";
 import apiClient from "../ApiClient";
-import { Comments, Posts } from "../types/types";
+import { Posts } from "../types/types";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Button } from "primereact/button";
+import CommentSection from "./Comments";
 
 export default function PostPage() {
 	const { loggedIn } = useAuth();
@@ -46,7 +46,7 @@ function Post({ post }: { post: Posts }) {
 				<main className="flex flex-column">
 					<h1 className="text-primary underline text-5xl m-0">{post?.title}</h1>
 					<h3 className="text-3xl">{post?.subtitle}</h3>
-					<p className="align-self-center text-lg" style={{ width: "100ch", textAlign: "justify", textJustify: "inter-word" }}>{post?.text}</p>
+					<p className="align-self-center text-lg" style={{ textAlign: "justify", textJustify: "inter-word" }}>{post?.text}</p>
 				</main>
 			</Card>
 		</>
@@ -61,104 +61,6 @@ function Spinner() {
 				<h1 className="text-6xl">Loading</h1>
 				<ProgressSpinner strokeWidth="5"></ProgressSpinner>
 			</div>
-		</>
-	);
-}
-
-function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
-	const [comments, setComments] = useState<Comments[] | []>();
-	const [nmbOfCmnts, setNmbOfCmnts] = useState<number>(10);
-	const [buttonLoad, setBtnLoad] = useState<boolean>(true);
-
-	useEffect(() => {
-		if (!loggedIn)
-			return;
-		const promise = apiClient.GET("/v1/posts/{id}/comments", { params: { path: { id }, query: { nmbOfCmnts: nmbOfCmnts } } });
-		promise.then((value) => {
-			setComments(value.data)
-			setBtnLoad(false);
-		})
-			.catch(() => alert("Error fetching comments"));
-	}, [id, loggedIn, nmbOfCmnts]);
-
-	return (
-		<>
-			<Divider />
-			<Card>
-				{
-					loggedIn ?
-						<>
-							<CommentList
-								comments={comments}
-								buttonLoad={buttonLoad}
-								nmbOfCmnts={nmbOfCmnts}
-								setNmbOfCmnts={setNmbOfCmnts}
-								setBtnLoad={setBtnLoad}
-							></CommentList>
-						</>
-						:
-						<h1 className="text-center">
-							<Link to={"/sign-in"} className="text-primary">Sign in </Link>
-							or
-							<Link to={"/log-in"} className="text-primary"> log in </Link> in order to see and post comments
-						</h1>
-				}
-			</Card>
-		</>
-	);
-}
-
-function CommentList(
-	{
-		comments,
-		buttonLoad,
-		nmbOfCmnts,
-		setBtnLoad,
-		setNmbOfCmnts,
-	}:
-		{
-			comments: Comments[] | undefined,
-			buttonLoad: boolean,
-			nmbOfCmnts: number
-			setBtnLoad: Dispatch<SetStateAction<boolean>>,
-			setNmbOfCmnts: Dispatch<SetStateAction<number>>
-		}
-) {
-	return (
-		<>
-			{
-				comments?.map((element) => (
-					<Comment key={element.id} data={element} />
-				))
-			}
-			{
-				comments && comments.length > 0 ?
-					<Button
-						loading={buttonLoad}
-						onClick={() => {
-							setBtnLoad(true)
-							setNmbOfCmnts(nmbOfCmnts + 5);
-						}}>Load more comments</Button>
-					:
-					null
-			}
-		</>
-	);
-}
-
-function Comment({ data }: { data: Comments }) {
-	const formattedDate = new Intl.DateTimeFormat(navigator.language, {
-		day: "2-digit",
-		month: "2-digit",
-		year: "numeric",
-	}).format(new Date(data.updatedAt));
-
-	return (
-		<>
-			<h3>{data.username}</h3>
-			<span>{formattedDate}</span>
-			<p style={{ width: "100ch", textAlign: "justify", textJustify: "inter-word" }}>{data.text}</p>
-			<Divider />
 		</>
 	);
 }
