@@ -16,11 +16,8 @@ export default function PostPage() {
 
 	useEffect(() => {
 		const promise = apiClient.GET("/v1/posts/{id}", { params: { path: { id: postId as string } } })
-		promise.then((value) => {
-			console.log(value.data);
-			setPosts(value.data);
-		})
-			.catch(() => alert("Something went wrong"));
+		promise.then((value) => setPosts(value.data)
+		).catch(() => alert("Something went wrong"));
 	}, [postId, loggedIn]);
 
 	return (
@@ -97,15 +94,15 @@ function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
 								))
 							}
 							{
-								comments && comments.length > 0 ? 
-								<Button 
-								loading={buttonLoad} 
-								onClick={() => {
-									setBtnLoad(true)
-									setNmbOfCmnts(nmbOfCmnts + 5);
-								}}>Load more comments</Button> 
-								: 
-								null
+								comments && comments.length > 0 ?
+									<Button
+										loading={buttonLoad}
+										onClick={() => {
+											setBtnLoad(true)
+											setNmbOfCmnts(nmbOfCmnts + 5);
+										}}>Load more comments</Button>
+									:
+									null
 							}
 						</>
 						:
