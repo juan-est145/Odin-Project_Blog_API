@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "./MainPage";
 import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { useAuth } from "#project/src/Context";
 import apiClient from "../ApiClient";
 import { Comments, Posts } from "../types/types";
@@ -88,22 +88,13 @@ function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
 				{
 					loggedIn ?
 						<>
-							{
-								comments?.map((element) => (
-									<Comment key={element.id} data={element} />
-								))
-							}
-							{
-								comments && comments.length > 0 ?
-									<Button
-										loading={buttonLoad}
-										onClick={() => {
-											setBtnLoad(true)
-											setNmbOfCmnts(nmbOfCmnts + 5);
-										}}>Load more comments</Button>
-									:
-									null
-							}
+							<CommentList
+								comments={comments}
+								buttonLoad={buttonLoad}
+								nmbOfCmnts={nmbOfCmnts}
+								setNmbOfCmnts={setNmbOfCmnts}
+								setBtnLoad={setBtnLoad}
+							></CommentList>
 						</>
 						:
 						<h1 className="text-center">
@@ -113,6 +104,44 @@ function CommentSection({ id, loggedIn }: { id: string, loggedIn: boolean }) {
 						</h1>
 				}
 			</Card>
+		</>
+	);
+}
+
+function CommentList(
+	{
+		comments,
+		buttonLoad,
+		nmbOfCmnts,
+		setBtnLoad,
+		setNmbOfCmnts,
+	}:
+		{
+			comments: Comments[] | undefined,
+			buttonLoad: boolean,
+			nmbOfCmnts: number
+			setBtnLoad: Dispatch<SetStateAction<boolean>>,
+			setNmbOfCmnts: Dispatch<SetStateAction<number>>
+		}
+) {
+	return (
+		<>
+			{
+				comments?.map((element) => (
+					<Comment key={element.id} data={element} />
+				))
+			}
+			{
+				comments && comments.length > 0 ?
+					<Button
+						loading={buttonLoad}
+						onClick={() => {
+							setBtnLoad(true)
+							setNmbOfCmnts(nmbOfCmnts + 5);
+						}}>Load more comments</Button>
+					:
+					null
+			}
 		</>
 	);
 }
