@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,39 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id Int @id @default(autoincrement())
-  username String @unique
-  password String
+model Comments {
+  id        String   @id
+  userId    Int
+  postId    String
+  text      String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role Roles @default(USER)
-  posts Posts[]
-  comments Comments[]
+  updatedAt DateTime @updatedAt()
+  Posts     Posts    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  Users     Users    @relation(fields: [userId], references: [id])
 }
 
 model Posts {
-  id String @id @default(uuid())
-  userId Int
-  title String
-  subtitle String?
-  text String
-  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
-  comments Comments[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean @default(false)
+  id        String     @id
+  userId    Int
+  title     String
+  subtitle  String?
+  text      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt()
+  published Boolean    @default(false)
+  Comments  Comments[]
+  Users     Users      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Comments {
-  id String @id @default(uuid())
-  userId Int
-  user Users @relation(fields: [userId], references: [id])
-  postId String
-  post Posts @relation(fields: [postId], references: [id], onDelete: Cascade)
-  text String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Users {
+  id        Int        @id @default(autoincrement())
+  username  String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt()
+  role      Roles      @default(USER)
+  Comments  Comments[]
+  Posts     Posts[]
 }
 
 enum Roles {

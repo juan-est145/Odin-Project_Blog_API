@@ -1,37 +1,21 @@
 {
-	"compilerOptions": {
-		"baseUrl": ".",
-		"paths": {
-			"#controllers/*": [
-				"./controllers/*"
-			],
-			"#routes/*": [
-				"./routes/*"
-			],
-			"#db/*": [
-				"./db/*"
-			],
-			"#auth/*": [
-				"./auth/*"
-			],
-			"#types/*": [
-				"./types/*"
-			]
-		},
-		// Treat files as modules even if it doesn't use import/export
-		"moduleDetection": "force",
-		// Ignore module structure
-		"module": "Preserve",
-		// Allow JSON modules to be imported
-		"resolveJsonModule": true,
-		// Allow JS files to be imported from TS and vice versa
-		"allowJs": true,
-		// Use correct ESM import behavior
-		"esModuleInterop": true,
-		// Disallow features that require cross-file awareness
-		"isolatedModules": true,
-		"sourceMap": true,
-		"strict": true,
-		"outDir": "./dist"
-	},
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2023",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false
+  }
 }
