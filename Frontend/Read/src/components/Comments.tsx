@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import type { Comments } from "../types/types";
 import { useState, useEffect } from "react";
 import apiClient from "../ApiClient";
@@ -105,15 +105,21 @@ function Comment({ data }: { data: Comments }) {
 
 function CommentEditor() {
 	const [text, setText] = useState<string>("");
+	const { postId } = useParams<string>();
+	async function postComment() {
+		const { data, error } = await apiClient.POST("/v1/posts/{id}/comments", {
+			body: { text }, params: { path: { id: postId as string } }
+		})
+	}
 	return (
 		<>
 			<section className="flex flex-column gap-2">
 				<Editor
-				value={text}
-				onTextChange={(e) => setText(e.htmlValue as string)}
-				style={{ minHeight: "300px" }}
+					value={text}
+					onTextChange={(e) => setText(e.textValue)}
+					style={{ minHeight: "300px" }}
 				></Editor>
-				<Button className="align-self-center">Sumbit</Button>
+				<Button className="align-self-center" onClick={async () => await postComment()}>Sumbit</Button>
 			</section>
 		</>
 	);

@@ -45,7 +45,7 @@ export interface paths {
         };
         get: operations["PostsController_getPostComments"];
         put?: never;
-        post?: never;
+        post: operations["PostsController_postPostComment"];
         delete?: never;
         options?: never;
         head?: never;
@@ -122,7 +122,19 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            username: string;
+            username?: string;
+        };
+        ForbiddenRequestErrorDto: {
+            /** @example 403 */
+            statusCode: number;
+            /** @example Forbidden resource */
+            message: string;
+            /** @example Forbidden */
+            error: string;
+        };
+        PostCommentsDto: {
+            /** @description The content of the comment */
+            text: string;
         };
         LogInBodyDto: {
             username: string;
@@ -270,12 +282,67 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description Returns an array of comments */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["CommentDto"][];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    PostsController_postPostComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The id of the post */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCommentsDto"];
+            };
+        };
+        responses: {
+            /** @description Returns the data of the comment schema */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentDto"];
+                };
+            };
+            /** @description Returns an invalid message if there is an error in the request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
                 };
             };
         };
