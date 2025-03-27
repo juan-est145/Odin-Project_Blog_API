@@ -103,7 +103,8 @@ export interface components {
         InvalidRequestErrorDto: {
             /** @example 400 */
             statusCode: number;
-            message: string[][];
+            /** @example Bad Request */
+            message: string[];
             /** @example Validation failed */
             error: string;
         };

@@ -1,12 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import type { Comments } from "../types/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import apiClient from "../ApiClient";
 import { Divider } from "primereact/divider";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { MenuItem } from "primereact/menuitem";
 import { TabMenu } from "primereact/tabmenu";
+import { Toast, ToastMessage } from "primereact/toast";
 import { Editor } from "primereact/editor";
 import "#project/src/assets/custom-quill.css";
 
@@ -105,15 +106,29 @@ function Comment({ data }: { data: Comments }) {
 
 function CommentEditor() {
 	const [text, setText] = useState<string>("");
+	const toast = useRef<Toast>(null);
 	const { postId } = useParams<string>();
 	async function postComment() {
-		const { data, error } = await apiClient.POST("/v1/posts/{id}/comments", {
-			body: { text }, params: { path: { id: postId as string } }
-		})
+		try {
+			const { data, error } = await apiClient.POST("/v1/posts/{id}/comments", {
+				body: { text: text.substring(0, text.length) }, params: { path: { id: postId as string } }
+			});
+			if (data) {
+				setText("");
+				return toast.current?.show({ severity: "success", summary: "Comment was uploaded correctly" });
+			}
+			const toastOpts: ToastMessage[] = error.message instanceof Array ?
+				error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage)) :
+				[{ severity: "error", summary: error.message }];
+			return toast.current?.show(toastOpts);
+		} catch {
+			return toast.current?.show({ severity: "error", summary: "Something went wrong. Please, try at a later time" });
+		}
 	}
 	return (
 		<>
 			<section className="flex flex-column gap-2">
+				<Toast ref={toast} position={"bottom-right"} />
 				<Editor
 					value={text}
 					onTextChange={(e) => setText(e.textValue)}

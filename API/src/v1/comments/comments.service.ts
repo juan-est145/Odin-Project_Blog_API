@@ -8,6 +8,7 @@ export class CommentsService {
 		try {
 			return await this.prisma.comments.findMany({
 				where: { postId },
+				orderBy: { updatedAt: "desc" },
 				take: nmbOfCmmnts,
 				include: { Users: { select: { username: true } } },
 			});

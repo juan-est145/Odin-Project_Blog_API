@@ -33,7 +33,7 @@ export class InvalidRequestErrorDto implements IErrorResponseDto {
 	@ApiProperty({ example: 400 })
 	statusCode: number;
 
-	@ApiProperty({ example: "Bad Request", isArray: true })
+	@ApiProperty({ example: "Bad Request" })
 	message: string[];
 
 	@ApiProperty({ example: "Validation failed" })

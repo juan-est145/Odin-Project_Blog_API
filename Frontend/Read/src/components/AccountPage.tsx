@@ -94,7 +94,7 @@ export function SignIn() {
 			if (data)
 				return redirect("/");
 			const toastOpts: ToastMessage[] = error.message instanceof Array ?
-				[...error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage))] : [{ severity: "error", summary: error.message }]
+				error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage)) : [{ severity: "error", summary: error.message }]
 			return toast.current?.show(toastOpts);
 		} catch {
 			return toast.current?.show(error500Toast);
