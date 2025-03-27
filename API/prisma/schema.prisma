@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Comments {
-  id        String   @id
+  id        String   @id @default(uuid())
   userId    Int
   postId    String
   text      String
@@ -19,7 +19,7 @@ model Comments {
 }
 
 model Posts {
-  id        String     @id
+  id        String     @id @default(uuid())
   userId    Int
   title     String
   subtitle  String?

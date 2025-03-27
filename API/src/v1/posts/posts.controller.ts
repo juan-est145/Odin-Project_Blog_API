@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import {
 	InvalidRequestErrorDto,
@@ -18,6 +18,8 @@ import {
 import { AuthGuard } from "../auth/guard/auth.guard";
 import { CommentsService } from "../comments/comments.service";
 import { CommentDto } from "../comments/comments.dto";
+import { User } from "../users/user.decorator";
+import { JwtPayload } from "../auth/auth.dto";
 
 @ApiTags("Posts")
 @Controller()
@@ -84,5 +86,15 @@ export class PostsController {
 			updatedAt: element.updatedAt,
 			username: element.Users.username,
 		}));
+	}
+
+	@Post(":id/comments")
+	@UseGuards(AuthGuard)
+	@ApiBearerAuth()
+	async postPostComment(
+		@Param() reqParam: PostsRequestParams,
+		@User() userJwt: JwtPayload,
+	) {
+		await this.commentsService.postComment("", reqParam.id, userJwt.id);
 	}
 }

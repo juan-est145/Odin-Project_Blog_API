@@ -15,4 +15,13 @@ export class CommentsService {
 			throw new InternalServerErrorException();
 		}
 	}
+	async postComment(text: string, postId: string, userId: number) {
+		try {
+			return await this.prisma.comments.create({
+				data: { text, postId, userId },
+			});
+		} catch {
+			throw new InternalServerErrorException();
+		}
+	}
 }
