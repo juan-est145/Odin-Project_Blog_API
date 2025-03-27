@@ -6,6 +6,7 @@ import {
 	IsOptional,
 	IsPositive,
 	IsUUID,
+	Length,
 } from "class-validator";
 import { IErrorResponseDto } from "../v1.dto";
 
@@ -36,6 +37,17 @@ export class InvalidRequestErrorDto implements IErrorResponseDto {
 	message: string[];
 
 	@ApiProperty({ example: "Validation failed" })
+	error: string;
+}
+
+export class ForbiddenRequestErrorDto implements IErrorResponseDto {
+	@ApiProperty({ example: 403 })
+	statusCode: number;
+
+	@ApiProperty({ example: "Forbidden resource" })
+	message: string;
+
+	@ApiProperty({ example: "Forbidden" })
 	error: string;
 }
 
@@ -87,4 +99,20 @@ export class PostsRequestParams {
 	@ApiProperty({ description: "The id of the post" })
 	@IsUUID()
 	id: string;
+}
+
+export class PostCommentsDto {
+	static readonly min: number = 1;
+	static readonly max: number = 8362;
+	@ApiProperty({
+		description: "The content of the comment",
+		additionalProperties: {
+			minLength: PostCommentsDto.min,
+			maxLength: PostCommentsDto.max,
+		},
+	})
+	@Length(PostCommentsDto.min, PostCommentsDto.max, {
+		message: `Comment length must have between ${PostCommentsDto.min} and ${PostCommentsDto.max} characters`,
+	})
+	text: string;
 }

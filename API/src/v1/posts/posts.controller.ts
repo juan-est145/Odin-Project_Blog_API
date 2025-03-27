@@ -1,8 +1,18 @@
-import { Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Query,
+	UseGuards,
+} from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import {
+	ForbiddenRequestErrorDto,
 	InvalidRequestErrorDto,
 	NotFoundErrorDto,
+	PostCommentsDto,
 	PostDto,
 	PostsRequestParams,
 	QueryGetPostIdCommentsDto,
@@ -14,6 +24,8 @@ import {
 	ApiTags,
 	ApiBearerAuth,
 	ApiNotFoundResponse,
+	ApiCreatedResponse,
+	ApiForbiddenResponse,
 } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/guard/auth.guard";
 import { CommentsService } from "../comments/comments.service";
@@ -69,6 +81,15 @@ export class PostsController {
 	@Get(":id/comments")
 	@UseGuards(AuthGuard)
 	@ApiBearerAuth()
+	@ApiOkResponse({
+		description: "Returns an array of comments",
+		type: CommentDto,
+		isArray: true,
+	})
+	@ApiForbiddenResponse({
+		description: "Returns an error if not using jwt or an invalid one",
+		type: ForbiddenRequestErrorDto,
+	})
 	async getPostComments(
 		@Param() param: PostsRequestParams,
 		@Query() query: QueryGetPostIdCommentsDto,
@@ -91,10 +112,28 @@ export class PostsController {
 	@Post(":id/comments")
 	@UseGuards(AuthGuard)
 	@ApiBearerAuth()
+	@ApiCreatedResponse({
+		description: "Returns the data of the comment schema",
+		type: CommentDto,
+	})
+	@ApiBadRequestResponse({
+		description:
+			"Returns an invalid message if there is an error in the request",
+		type: InvalidRequestErrorDto,
+	})
+	@ApiForbiddenResponse({
+		description: "Returns an error if not using jwt or an invalid one",
+		type: ForbiddenRequestErrorDto,
+	})
 	async postPostComment(
 		@Param() reqParam: PostsRequestParams,
 		@User() userJwt: JwtPayload,
-	) {
-		await this.commentsService.postComment("", reqParam.id, userJwt.id);
+		@Body() comment: PostCommentsDto,
+	): Promise<CommentDto> {
+		return await this.commentsService.postComment(
+			comment.text,
+			reqParam.id,
+			userJwt.id,
+		);
 	}
 }

@@ -14,6 +14,4 @@ export class CommentDto implements Comments {
 	createdAt: Date;
 	@ApiProperty()
 	updatedAt: Date;
-	@ApiProperty()
-	username: string;
 }
