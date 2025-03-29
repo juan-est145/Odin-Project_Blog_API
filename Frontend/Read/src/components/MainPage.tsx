@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { Card } from "primereact/card";
 import { Toolbar } from "primereact/toolbar";
-import { HtmlHTMLAttributes, useEffect, useState } from "react";
+import { HtmlHTMLAttributes, useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo42 from "#project/src/assets/42Logo.jpg"
 import postImage from "#project/src/assets/pexels-pixabay-261763.jpg";
@@ -14,12 +14,13 @@ import apiClient from "../ApiClient";
 
 export default function MainPage() {
 	const [posts, setPosts] = useState<Posts[] | null>([]);
+	const [nmbOfPosts, setNmbOfPosts] = useState<number>(10);
 
 	useEffect(() => {
-		const promise = apiClient.GET("/v1/posts", { params: { query: { published: true } } });
+		const promise = apiClient.GET("/v1/posts", { params: { query: { published: true, nmbOfPosts } } });
 		promise.then((value) => setPosts(value.data ? value.data : []))
 			.catch(() => setPosts(null));
-	}, []);
+	}, [nmbOfPosts]);
 
 	function SkelLoad() {
 		const props: HtmlHTMLAttributes<HTMLDivElement> = {
@@ -40,15 +41,32 @@ export default function MainPage() {
 			<Divider />
 			<ImageCard />
 			<Divider />
+			{posts && posts.length > 0 ?
+				<PostsCollection
+					posts={posts}
+					nmbOfPosts={nmbOfPosts}
+					setNmbOfPosts={setNmbOfPosts}>
+				</PostsCollection> : posts && <SkelLoad></SkelLoad>}
+			{!posts && <h1>Oops, something went wrong. Try at another time</h1>}
+		</>
+	);
+}
+
+function PostsCollection({ posts, nmbOfPosts, setNmbOfPosts }: { posts: Posts[], nmbOfPosts: number, setNmbOfPosts: Dispatch<SetStateAction<number>> }) {
+	return (
+		<>
 			<div className="flex flex-wrap gap-1">
-				{posts && posts.length > 0 ? posts.map((element) => {
+				{posts.map((element) => {
 					return (
 						<PostsCard key={element.id} postInfo={element}></PostsCard>
 					);
-				}) : posts && <SkelLoad></SkelLoad>}
-				{!posts && <h1>Oops, something went wrong. Try at another time</h1>}
+				})}
+			</div>
+			<div className="flex justify-content-center align-items-center">
+				<Button onClick={() => setNmbOfPosts(nmbOfPosts + 5)} size="large">Refresh</Button>
 			</div>
 		</>
+
 	);
 }
 
@@ -62,9 +80,9 @@ export function Header() {
 function TBStart() {
 	return (
 		<>
-				<h1 className="m-0">
-					<Link to={"/"} className="no-underline text-white">Odin Blog</Link>
-				</h1>
+			<h1 className="m-0">
+				<Link to={"/"} className="no-underline text-white">Odin Blog</Link>
+			</h1>
 		</>
 	);
 }
