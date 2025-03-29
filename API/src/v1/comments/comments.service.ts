@@ -25,4 +25,14 @@ export class CommentsService {
 			throw new InternalServerErrorException();
 		}
 	}
+	async getUserComments(userId: number, nmbOfCmmnts: number = 10) {
+		try {
+			return await this.prisma.comments.findMany({
+				where: { userId },
+				take: nmbOfCmmnts,
+			});
+		} catch {
+			throw new InternalServerErrorException();
+		}
+	}
 }

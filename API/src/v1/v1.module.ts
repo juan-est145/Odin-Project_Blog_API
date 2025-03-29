@@ -5,6 +5,7 @@ import { PrismaModule } from "src/db/db.module";
 import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { CommentsModule } from "./comments/comments.module";
+import { AccntModule } from "./accnt/accnt.module";
 
 @Module({
 	imports: [
@@ -24,10 +25,15 @@ import { CommentsModule } from "./comments/comments.module";
 						path: "auth",
 						module: AuthModule,
 					},
+					{
+						path: "accnt",
+						module: AccntModule,
+					},
 				],
 			},
 		]),
 		CommentsModule,
+		AccntModule,
 	],
 })
 export class V1Module {}
