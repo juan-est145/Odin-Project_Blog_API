@@ -4,7 +4,9 @@ import { Fieldset } from "primereact/fieldset";
 import { MenuItem } from "primereact/menuitem";
 import { SplitButton } from "primereact/splitbutton";
 import { TabMenu } from "primereact/tabmenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Comments } from "../types/types";
+import apiClient from "../APiClient";
 
 export default function MainPage() {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -29,33 +31,39 @@ export default function MainPage() {
 }
 
 function CommentsSection() {
+	const [comments, setComments] = useState<Comments[]>([]);
+	useEffect(() => {
+		const promise = apiClient.GET("/v1/accnt/comments");
+		promise.then((value) => {
+			if (value.data)
+				setComments(value.data);
+			else
+				console.error("No data");
+		});
+		// TO DO: Make this more graceful 
+		promise.catch(() => alert("Something went wrong, please try again at a later time"));
+	}, []);
 	return (
 		<>
 			<div className="flex min-w-full flex-column justify-content-center gap-1">
-				<CommentCard></CommentCard>
-				<CommentCard></CommentCard>
-				<CommentCard></CommentCard>
-				<CommentCard></CommentCard>
-				<CommentCard></CommentCard>
-				<CommentCard></CommentCard>
-				<CommentCard></CommentCard>
-				<CommentCard></CommentCard>
-				<CommentCard></CommentCard>
+				{comments.map((element) => {
+					return <CommentCard key={element.id} comment={element}></CommentCard>
+				})}
 			</div>
 		</>
 	);
 }
 
-function CommentCard() {
+function CommentCard({ comment }: { comment: Comments }) {
 	const items: MenuItem[] = [
 		{ label: "Delete comment", icon: "pi pi-trash" },
 	];
 	return (
 		<>
-			<Fieldset legend={"Post title"} toggleable>
-				<p>Text</p>
-				<p>Created at</p>
-				<p>Edited at</p>
+			<Fieldset legend={comment.postTitle} toggleable>
+				<p>{comment.text}</p>
+				<p>Created at: {comment.createdAt}</p>
+				<p>Updated at: {comment.updatedAt}</p>
 				<SplitButton label="Edit" icon="pi pi-file-edit" model={items}/>
 			</Fieldset>
 		</>

@@ -22,6 +22,7 @@ export class AccntController {
 	@ApiOkResponse({
 		description: "Returns the comments made by the user",
 		type: AccntCommentsDto,
+		isArray: true,
 	})
 	@ApiForbiddenResponse({
 		description: "Returns an error if not using jwt or an invalid one",

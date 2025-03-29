@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "types": "openapi-typescript http://localhost:3000/docs/json -o ./src/types/API.ts",
+    "dev": "npm run types && vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
