@@ -30,6 +30,8 @@ export class CommentsService {
 			return await this.prisma.comments.findMany({
 				where: { userId },
 				take: nmbOfCmmnts,
+				orderBy: { updatedAt: "desc" },
+				include: { Posts: { select: { title: true } } },
 			});
 		} catch {
 			throw new InternalServerErrorException();
