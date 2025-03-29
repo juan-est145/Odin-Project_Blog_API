@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Comments } from "@prisma/client";
 import { IsOptional, IsInt, IsPositive } from "class-validator";
 
 export class QueryGetCommentsDto {
@@ -12,4 +13,21 @@ export class QueryGetCommentsDto {
 	@IsInt()
 	@IsPositive()
 	nmbOfCmmnts?: number;
+}
+
+export class AccntCommentsDto implements Comments {
+	@ApiProperty()
+	id: string;
+	@ApiProperty()
+	userId: number;
+	@ApiProperty()
+	postId: string;
+	@ApiProperty()
+	text: string;
+	@ApiProperty()
+	createdAt: Date;
+	@ApiProperty()
+	updatedAt: Date;
+	@ApiProperty()
+	postTitle: string;
 }

@@ -8,7 +8,6 @@ import {
 	IsUUID,
 	Length,
 } from "class-validator";
-import { IErrorResponseDto } from "../v1.dto";
 
 export class PostDto implements Posts {
 	@ApiProperty()
@@ -27,36 +26,6 @@ export class PostDto implements Posts {
 	updatedAt: Date;
 	@ApiProperty()
 	published: boolean;
-}
-
-export class InvalidRequestErrorDto implements IErrorResponseDto {
-	@ApiProperty({ example: 400 })
-	statusCode: number;
-
-	@ApiProperty({ example: "Bad Request" })
-	message: string[];
-
-	@ApiProperty({ example: "Validation failed" })
-	error: string;
-}
-
-export class ForbiddenRequestErrorDto implements IErrorResponseDto {
-	@ApiProperty({ example: 403 })
-	statusCode: number;
-
-	@ApiProperty({ example: "Forbidden resource" })
-	message: string;
-
-	@ApiProperty({ example: "Forbidden" })
-	error: string;
-}
-
-export class NotFoundErrorDto implements IErrorResponseDto {
-	@ApiProperty({ example: 404 })
-	statusCode: number;
-
-	@ApiProperty({ example: "Not found" })
-	message: string;
 }
 
 export class QueryGetPostsDto {

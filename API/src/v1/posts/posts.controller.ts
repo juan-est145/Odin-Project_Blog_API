@@ -12,6 +12,8 @@ import {
 	ForbiddenRequestErrorDto,
 	InvalidRequestErrorDto,
 	NotFoundErrorDto,
+} from "../v1.dto";
+import {
 	PostCommentsDto,
 	PostDto,
 	PostsRequestParams,
