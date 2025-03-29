@@ -1,4 +1,5 @@
 import { useAuth } from "#project/src/Context";
+import { Divider } from "primereact/divider";
 import { Fieldset } from "primereact/fieldset";
 import { MenuItem } from "primereact/menuitem";
 import { SplitButton } from "primereact/splitbutton";
@@ -21,6 +22,7 @@ export default function MainPage() {
 		<>
 			{loggedIn ? <h1>You are logged in</h1> : <h1>You are not logged in</h1>}
 			<TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}></TabMenu>
+			<Divider/>
 			{components[activeIndex]}
 		</>
 	);
@@ -29,7 +31,6 @@ export default function MainPage() {
 function CommentsSection() {
 	return (
 		<>
-			<h1>Something</h1>
 			<div className="flex min-w-full flex-column justify-content-center gap-1">
 				<CommentCard></CommentCard>
 				<CommentCard></CommentCard>
