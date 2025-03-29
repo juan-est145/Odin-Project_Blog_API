@@ -4,7 +4,7 @@ import MainPage from "./components/MainPage";
 const routes: RouteObject[] = [
 	{
 		path: "/",
-		element: <MainPage/>
+		element: <MainPage />
 	}
 ]
 
