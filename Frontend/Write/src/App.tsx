@@ -1,12 +1,14 @@
-import { useAuth } from "./Context";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import routes from "./Routes";
+
+const router = createBrowserRouter(routes);
 
 function App() {
-  const { loggedIn } = useAuth();
   return (
     <>
-      { loggedIn ? <h1>You are logged in</h1> : <h1>You are not logged in</h1> }
+      <RouterProvider router={router}></RouterProvider>
     </>
-  )
+  );
 }
 
 export default App
