@@ -1,8 +1,17 @@
-function App() {
+import { useState, useEffect } from "react";
 
+function App() {
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  useEffect(() => {
+    const jwt: string | null = localStorage.getItem("jwt");
+    if (jwt)
+      setLoggedIn(true);
+    else
+      setLoggedIn(false);
+  }, []);
   return (
     <>
-      <h1>Welcome to write part</h1>
+      { loggedIn ? <h1>You are logged in</h1> : <h1>You are not logged in</h1> }
     </>
   )
 }
