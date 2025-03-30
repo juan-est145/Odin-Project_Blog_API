@@ -108,7 +108,7 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put?: never;
+        put: operations["AccntController_updateComment"];
         post?: never;
         delete: operations["AccntController_deleteComment"];
         options?: never;
@@ -511,6 +511,50 @@ export interface operations {
                 };
             };
             /** @description Returns an error if not using jwt or an invalid one */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_updateComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCommentsDto"];
+            };
+        };
+        responses: {
+            /** @description Returns the data of the updated comment */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccntCommentsDto"];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if comment id does not belong to the user */
             403: {
                 headers: {
                     [name: string]: unknown;

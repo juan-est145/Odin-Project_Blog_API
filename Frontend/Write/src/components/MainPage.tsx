@@ -4,12 +4,13 @@ import { Fieldset } from "primereact/fieldset";
 import { MenuItem } from "primereact/menuitem";
 import { SplitButton } from "primereact/splitbutton";
 import { TabMenu } from "primereact/tabmenu";
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useEffect, useState, Dispatch, SetStateAction, useRef } from "react";
 import { Comments } from "../types/types";
 import apiClient from "../APiClient";
 import { Editor } from "primereact/editor";
 import "#project/src/assets/custom-quill.css";
 import { Button } from "primereact/button";
+import { Toast, ToastMessage } from "primereact/toast";
 
 export default function MainPage() {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -93,7 +94,7 @@ function CommentCard({ comment, comments, setComments }
 				{
 					editorActive ?
 						<CommentEditor
-							commentText={comment.text}
+							comment={comment}
 							setEditor={setEditor}></CommentEditor>
 						:
 						<>
@@ -112,11 +113,24 @@ function CommentCard({ comment, comments, setComments }
 	);
 }
 
-function CommentEditor({ commentText, setEditor }: { commentText: string, setEditor: Dispatch<SetStateAction<boolean>> }) {
-	const [text, setText] = useState<string>(commentText);
+function CommentEditor({ comment, setEditor }: { comment: Comments, setEditor: Dispatch<SetStateAction<boolean>> }) {
+	const [text, setText] = useState<string>(comment.text);
+	const toast = useRef<Toast>(null);
 
-	function updateComment() {
-		setEditor(false);
+	async function updateComment() {
+		const { data, error } = await apiClient.PUT("/v1/accnt/comments/{commentId}",
+			{ body: { text: text.substring(0, text.length - 1) }, params: { path: { commentId: comment.id } } }
+		);
+		if (data) {
+			setEditor(false);
+		}
+		else {
+			const toastOpts: ToastMessage[] = error.message instanceof Array ?
+				error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage)) :
+				[{ severity: "error", summary: error.message }];
+			
+			return toast.current?.show(toastOpts);
+		}
 	}
 
 	return (
@@ -126,7 +140,8 @@ function CommentEditor({ commentText, setEditor }: { commentText: string, setEdi
 				onTextChange={(e) => setText(e.textValue)}
 				style={{ minHeight: "300px" }}></Editor>
 			<Divider />
-			<Button onClick={updateComment}>Update comment</Button>
+			<Button onClick={async () => await updateComment()}>Update comment</Button>
+			<Toast ref={toast} position={"bottom-right"}></Toast>
 		</>
 	);
 }
