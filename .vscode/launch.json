@@ -23,6 +23,20 @@
 			"console": "integratedTerminal",
 		},
 		{
+			"name": "React write",
+			"request": "launch",
+			"url": "http://localhost:5173",
+			"type": "chrome",
+			"sourceMaps": true,
+			"trace": true,
+			"webRoot": "${workspaceFolder}/Frontend/Write/src",
+			"skipFiles": [
+				"<node_internals>/**",
+				// Ignore all dependencies (optional)
+				"${workspaceFolder}/Frontend/Write/node_modules/**",
+			]
+		},
+		{
 			"name": "React read",
 			"request": "launch",
 			"url": "http://localhost:5173",

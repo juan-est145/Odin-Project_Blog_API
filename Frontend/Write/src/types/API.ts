@@ -100,6 +100,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/accnt/comments/{commentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["AccntController_deleteComment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -211,6 +227,11 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
             postTitle: string;
+        };
+        DeleteCommentRes: {
+            /** @example 200 */
+            code: number;
+            message: string;
         };
     };
     responses: never;
@@ -480,7 +501,7 @@ export interface operations {
                     "application/json": components["schemas"]["AccntCommentsDto"][];
                 };
             };
-            /** @description If the request is invalid, it returns ther error */
+            /** @description If the request is invalid, it returns the error */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -490,6 +511,46 @@ export interface operations {
                 };
             };
             /** @description Returns an error if not using jwt or an invalid one */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_deleteComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns a confirmation message alongside a 200 status code */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteCommentRes"];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if comment id does not belong to the user */
             403: {
                 headers: {
                     [name: string]: unknown;

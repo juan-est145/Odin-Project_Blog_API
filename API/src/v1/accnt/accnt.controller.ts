@@ -56,7 +56,7 @@ export class AccntController {
 		}));
 	}
 
-	@Delete("/comments/:id")
+	@Delete("/comments/:commentId")
 	@UseGuards(AuthGuard)
 	@ApiBearerAuth()
 	@ApiBadRequestResponse({
