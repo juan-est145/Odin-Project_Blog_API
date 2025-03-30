@@ -1,6 +1,11 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Controller, Get, Query, Delete, Param } from "@nestjs/common";
 import { CommentsService } from "../comments/comments.service";
-import { AccntCommentsDto, QueryGetCommentsDto } from "./accnt.dto";
+import {
+	AccntCommentsDto,
+	DeleteCommentParam,
+	DeleteCommentRes,
+	QueryGetCommentsDto,
+} from "./accnt.dto";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guard/auth.guard";
 import {
@@ -29,7 +34,7 @@ export class AccntController {
 		type: ForbiddenRequestErrorDto,
 	})
 	@ApiBadRequestResponse({
-		description: "If the request is invalid, it returns ther error",
+		description: "If the request is invalid, it returns the error",
 		type: InvalidRequestErrorDto,
 	})
 	async getComments(
@@ -49,5 +54,35 @@ export class AccntController {
 			updatedAt: element.updatedAt,
 			postTitle: element.Posts.title,
 		}));
+	}
+
+	@Delete("/comments/:id")
+	@UseGuards(AuthGuard)
+	@ApiBearerAuth()
+	@ApiBadRequestResponse({
+		description: "If the request is invalid, it returns the error",
+		type: InvalidRequestErrorDto,
+	})
+	@ApiForbiddenResponse({
+		description:
+			"Returns an error if not using jwt or an invalid one or if comment id does not belong to the user",
+		type: ForbiddenRequestErrorDto,
+	})
+	@ApiOkResponse({
+		description: "Returns a confirmation message alongside a 200 status code",
+		type: DeleteCommentRes,
+	})
+	async deleteComment(
+		@Param() param: DeleteCommentParam,
+		@User() user: JwtPayload,
+	): Promise<DeleteCommentRes> {
+		const comment = await this.comment.deleteUserComment(
+			param.commentId,
+			user.id,
+		);
+		return {
+			code: 200,
+			message: `Comment ${comment.id} was deleted successfully`,
+		};
 	}
 }

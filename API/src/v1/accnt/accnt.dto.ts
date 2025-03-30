@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Comments } from "@prisma/client";
-import { IsOptional, IsInt, IsPositive } from "class-validator";
+import { IsOptional, IsInt, IsPositive, IsUUID } from "class-validator";
 
 export class QueryGetCommentsDto {
 	@ApiProperty({
@@ -30,4 +30,19 @@ export class AccntCommentsDto implements Comments {
 	updatedAt: Date;
 	@ApiProperty()
 	postTitle: string;
+}
+
+export class DeleteCommentParam {
+	@ApiProperty()
+	@IsUUID()
+	commentId: string;
+}
+
+export class DeleteCommentRes {
+	@ApiProperty({
+		example: 200,
+	})
+	code: number;
+	@ApiProperty()
+	message: string;
 }
