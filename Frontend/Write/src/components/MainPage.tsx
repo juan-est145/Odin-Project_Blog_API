@@ -92,19 +92,19 @@ function CommentCard({ comment, comments, setComments }
 			<Fieldset legend={comment.postTitle} toggleable>
 				{
 					editorActive ?
-						<CommentEditor 
-						commentText={comment.text}
-						setEditor={setEditor}></CommentEditor>
+						<CommentEditor
+							commentText={comment.text}
+							setEditor={setEditor}></CommentEditor>
 						:
 						<>
 							<p>{comment.text}</p>
 							<p>Created at: {dateFormmater.format(new Date(comment.createdAt))}</p>
 							<p>Updated at: {dateFormmater.format(new Date(comment.updatedAt))}</p>
-							<SplitButton 
-							label="Edit" 
-							icon="pi pi-file-edit" 
-							model={items}
-							onClick={() => setEditor(true)}/>
+							<SplitButton
+								label="Edit"
+								icon="pi pi-file-edit"
+								model={items}
+								onClick={() => setEditor(true)} />
 						</>
 				}
 			</Fieldset>
@@ -125,7 +125,7 @@ function CommentEditor({ commentText, setEditor }: { commentText: string, setEdi
 				value={text}
 				onTextChange={(e) => setText(e.textValue)}
 				style={{ minHeight: "300px" }}></Editor>
-			<Divider/>
+			<Divider />
 			<Button onClick={updateComment}>Update comment</Button>
 		</>
 	);
