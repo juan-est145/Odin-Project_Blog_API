@@ -1,0 +1,34 @@
+/* custom-quill.css */
+
+/* Customize the toolbar */
+.ql-toolbar {
+	background-color: #f0f0f0; /* Light gray background */
+	border: 1px solid #ccc; /* Light gray border */
+  }
+  
+  /* Customize the editor area */
+  .ql-container {
+	background-color: #ffffff; /* White background */
+	border: 1px solid #ccc; /* Light gray border */
+	color: #333; /* Dark gray text */
+  }
+  
+  /* Customize the editor text */
+  .ql-editor {
+	color: #333; /* Dark gray text */
+  }
+  
+  /* Customize the toolbar buttons */
+  .ql-toolbar .ql-formats button {
+	color: #333; /* Dark gray text */
+  }
+  
+  .ql-toolbar .ql-formats button:hover {
+	background-color: #e0e0e0; /* Light gray background on hover */
+  }
+  
+  /* Customize the active toolbar button */
+  .ql-toolbar .ql-formats button.ql-active {
+	background-color: #d0d0d0; /* Darker gray background */
+	color: #000; /* Black text */
+  }
