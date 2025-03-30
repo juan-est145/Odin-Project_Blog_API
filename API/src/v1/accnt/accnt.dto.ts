@@ -32,7 +32,7 @@ export class AccntCommentsDto implements Comments {
 	postTitle: string;
 }
 
-export class DeleteCommentParam {
+export class CommentIdParam {
 	@ApiProperty()
 	@IsUUID()
 	commentId: string;

@@ -59,4 +59,20 @@ export class CommentsService {
 			throw new InternalServerErrorException();
 		}
 	}
+
+	async updateComment(commentId: string, userId: number, text: string) {
+		try {
+			return await this.prisma.comments.update({
+				where: { id: commentId, userId },
+				data: { text },
+			});
+		} catch (error) {
+			if (
+				error instanceof PrismaClientKnownRequestError &&
+				error.code === "P2016"
+			)
+				throw new UnauthorizedException();
+			throw new InternalServerErrorException();
+		}
+	}
 }

@@ -1,8 +1,16 @@
-import { Controller, Get, Query, Delete, Param } from "@nestjs/common";
+import {
+	Controller,
+	Get,
+	Query,
+	Delete,
+	Param,
+	Put,
+	Body,
+} from "@nestjs/common";
 import { CommentsService } from "../comments/comments.service";
 import {
 	AccntCommentsDto,
-	DeleteCommentParam,
+	CommentIdParam,
 	DeleteCommentRes,
 	QueryGetCommentsDto,
 } from "./accnt.dto";
@@ -17,12 +25,13 @@ import {
 import { User } from "../users/user.decorator";
 import { JwtPayload } from "../auth/auth.dto";
 import { ForbiddenRequestErrorDto, InvalidRequestErrorDto } from "../v1.dto";
+import { PostCommentsDto } from "../posts/posts.dto";
 
+@UseGuards(AuthGuard)
 @Controller()
 export class AccntController {
 	constructor(private comment: CommentsService) {}
 	@Get("/comments")
-	@UseGuards(AuthGuard)
 	@ApiBearerAuth()
 	@ApiOkResponse({
 		description: "Returns the comments made by the user",
@@ -57,7 +66,6 @@ export class AccntController {
 	}
 
 	@Delete("/comments/:commentId")
-	@UseGuards(AuthGuard)
 	@ApiBearerAuth()
 	@ApiBadRequestResponse({
 		description: "If the request is invalid, it returns the error",
@@ -73,7 +81,7 @@ export class AccntController {
 		type: DeleteCommentRes,
 	})
 	async deleteComment(
-		@Param() param: DeleteCommentParam,
+		@Param() param: CommentIdParam,
 		@User() user: JwtPayload,
 	): Promise<DeleteCommentRes> {
 		const comment = await this.comment.deleteUserComment(
@@ -84,5 +92,19 @@ export class AccntController {
 			code: 200,
 			message: `Comment ${comment.id} was deleted successfully`,
 		};
+	}
+
+	@Put("/comments/:commentId")
+	@ApiBearerAuth()
+	async updateComment(
+		@Param() param: CommentIdParam,
+		@User() user: JwtPayload,
+		@Body() body: PostCommentsDto,
+	) {
+		return await this.comment.updateComment(
+			param.commentId,
+			user.id,
+			body.text,
+		);
 	}
 }
