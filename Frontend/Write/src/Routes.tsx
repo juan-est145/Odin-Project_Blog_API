@@ -6,6 +6,6 @@ const routes: RouteObject[] = [
 		path: "/",
 		element: <MainPage />
 	}
-]
+];
 
 export default routes;
