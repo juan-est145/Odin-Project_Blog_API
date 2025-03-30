@@ -7,6 +7,9 @@ import { TabMenu } from "primereact/tabmenu";
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Comments } from "../types/types";
 import apiClient from "../APiClient";
+import { Editor } from "primereact/editor";
+import "#project/src/assets/custom-quill.css";
+import { Button } from "primereact/button";
 
 export default function MainPage() {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -63,6 +66,8 @@ function CommentCard({ comment, comments, setComments }
 		comments: Comments[],
 		setComments: Dispatch<SetStateAction<Comments[]>>
 	}) {
+	const [editorActive, setEditor] = useState<boolean>(false);
+
 	async function deleteComment() {
 		const { data, error } = await apiClient.DELETE("/v1/accnt/comments/{commentId}",
 			{ params: { path: { commentId: comment.id } } });
@@ -85,11 +90,43 @@ function CommentCard({ comment, comments, setComments }
 	return (
 		<>
 			<Fieldset legend={comment.postTitle} toggleable>
-				<p>{comment.text}</p>
-				<p>Created at: {dateFormmater.format(new Date(comment.createdAt))}</p>
-				<p>Updated at: {dateFormmater.format(new Date(comment.updatedAt))}</p>
-				<SplitButton label="Edit" icon="pi pi-file-edit" model={items} />
+				{
+					editorActive ?
+						<CommentEditor 
+						commentText={comment.text}
+						setEditor={setEditor}></CommentEditor>
+						:
+						<>
+							<p>{comment.text}</p>
+							<p>Created at: {dateFormmater.format(new Date(comment.createdAt))}</p>
+							<p>Updated at: {dateFormmater.format(new Date(comment.updatedAt))}</p>
+							<SplitButton 
+							label="Edit" 
+							icon="pi pi-file-edit" 
+							model={items}
+							onClick={() => setEditor(true)}/>
+						</>
+				}
 			</Fieldset>
+		</>
+	);
+}
+
+function CommentEditor({ commentText, setEditor }: { commentText: string, setEditor: Dispatch<SetStateAction<boolean>> }) {
+	const [text, setText] = useState<string>(commentText);
+
+	function updateComment() {
+		setEditor(false);
+	}
+
+	return (
+		<>
+			<Editor
+				value={text}
+				onTextChange={(e) => setText(e.textValue)}
+				style={{ minHeight: "300px" }}></Editor>
+			<Divider/>
+			<Button onClick={updateComment}>Update comment</Button>
 		</>
 	);
 }
