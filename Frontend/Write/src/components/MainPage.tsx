@@ -46,13 +46,13 @@ function CommentsSection() {
 	return (
 		<>
 			<div className="flex min-w-full flex-column justify-content-center gap-1">
-				{comments.map((element) => {
+				{comments.length > 0 ? comments.map((element) => {
 					return <CommentCard
 						key={element.id}
 						comment={element}
 						comments={comments}
 						setComments={setComments}></CommentCard>
-				})}
+				}) : <h1>You have no comments yet</h1>}
 			</div>
 		</>
 	);
