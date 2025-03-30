@@ -65,6 +65,7 @@ export class CommentsService {
 			return await this.prisma.comments.update({
 				where: { id: commentId, userId },
 				data: { text },
+				include: { Posts: { select: { title: true } } },
 			});
 		} catch (error) {
 			if (

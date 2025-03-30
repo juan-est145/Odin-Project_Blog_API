@@ -96,15 +96,37 @@ export class AccntController {
 
 	@Put("/comments/:commentId")
 	@ApiBearerAuth()
+	@ApiOkResponse({
+		description: "Returns the data of the updated comment",
+		type: AccntCommentsDto,
+	})
+	@ApiBadRequestResponse({
+		description: "If the request is invalid, it returns the error",
+		type: InvalidRequestErrorDto,
+	})
+	@ApiForbiddenResponse({
+		description:
+			"Returns an error if not using jwt or an invalid one or if comment id does not belong to the user",
+		type: ForbiddenRequestErrorDto,
+	})
 	async updateComment(
 		@Param() param: CommentIdParam,
 		@User() user: JwtPayload,
 		@Body() body: PostCommentsDto,
-	) {
-		return await this.comment.updateComment(
+	): Promise<AccntCommentsDto> {
+		const comment = await this.comment.updateComment(
 			param.commentId,
 			user.id,
 			body.text,
 		);
+		return {
+			id: comment.id,
+			userId: comment.userId,
+			postId: comment.postId,
+			text: comment.text,
+			createdAt: comment.createdAt,
+			updatedAt: comment.updatedAt,
+			postTitle: comment.Posts.title,
+		};
 	}
 }
