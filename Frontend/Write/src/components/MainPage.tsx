@@ -40,7 +40,6 @@ function CommentsSection() {
 			else
 				console.error("No data");
 		});
-		// TO DO: Make this more graceful 
 		promise.catch(() => alert("Something went wrong, please try again at a later time"));
 	}, []);
 	return (
