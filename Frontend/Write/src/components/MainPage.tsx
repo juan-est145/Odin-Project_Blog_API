@@ -82,12 +82,6 @@ function CommentCard({ comment, comments, setComments }
 		{ label: "Delete comment", icon: "pi pi-trash", command: async () => await deleteComment() },
 	];
 
-	const dateFormmater = new Intl.DateTimeFormat(navigator.language, {
-		day: "2-digit",
-		month: "2-digit",
-		year: "numeric",
-	});
-
 	return (
 		<>
 			<Fieldset legend={comment.postTitle} toggleable>
@@ -95,12 +89,14 @@ function CommentCard({ comment, comments, setComments }
 					editorActive ?
 						<CommentEditor
 							comment={comment}
+							comments={comments}
+							setComments={setComments}
 							setEditor={setEditor}></CommentEditor>
 						:
 						<>
 							<p>{comment.text}</p>
-							<p>Created at: {dateFormmater.format(new Date(comment.createdAt))}</p>
-							<p>Updated at: {dateFormmater.format(new Date(comment.updatedAt))}</p>
+							<p>Created at: {dateFormater(comment.createdAt)}</p>
+							<p>Updated at: {dateFormater(comment.updatedAt)}</p>
 							<SplitButton
 								label="Edit"
 								icon="pi pi-file-edit"
@@ -113,7 +109,13 @@ function CommentCard({ comment, comments, setComments }
 	);
 }
 
-function CommentEditor({ comment, setEditor }: { comment: Comments, setEditor: Dispatch<SetStateAction<boolean>> }) {
+function CommentEditor({ comment, comments, setComments, setEditor }
+	: {
+		comment: Comments,
+		comments: Comments[],
+		setComments: Dispatch<SetStateAction<Comments[]>>,
+		setEditor: Dispatch<SetStateAction<boolean>>
+	}) {
 	const [text, setText] = useState<string>(comment.text);
 	const toast = useRef<Toast>(null);
 
@@ -122,13 +124,23 @@ function CommentEditor({ comment, setEditor }: { comment: Comments, setEditor: D
 			{ body: { text: text.substring(0, text.length - 1) }, params: { path: { commentId: comment.id } } }
 		);
 		if (data) {
+			const updatedComments = comments.map((element) => {
+				if (element.id !== data.id)
+					return (element);
+				return ({
+					...data, 
+					updatedAt: dateFormater(data.updatedAt),
+					createdAt: dateFormater(data.createdAt),
+				});
+			});
+			setComments(updatedComments);
 			setEditor(false);
 		}
 		else {
 			const toastOpts: ToastMessage[] = error.message instanceof Array ?
 				error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage)) :
 				[{ severity: "error", summary: error.message }];
-			
+
 			return toast.current?.show(toastOpts);
 		}
 	}
@@ -146,3 +158,15 @@ function CommentEditor({ comment, setEditor }: { comment: Comments, setEditor: D
 	);
 }
 
+function dateFormater(date: string) {
+	try {
+		const dateFormmater = new Intl.DateTimeFormat(navigator.language, {
+			day: "2-digit",
+			month: "2-digit",
+			year: "numeric",
+		});
+		return dateFormmater.format(new Date(date));
+	} catch {
+		return (date);
+	}
+}
