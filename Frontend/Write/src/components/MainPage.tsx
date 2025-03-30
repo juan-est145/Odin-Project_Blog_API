@@ -76,12 +76,18 @@ function CommentCard({ comment, comments, setComments }
 		{ label: "Delete comment", icon: "pi pi-trash", command: async () => await deleteComment() },
 	];
 
+	const dateFormmater = new Intl.DateTimeFormat(navigator.language, {
+		day: "2-digit",
+		month: "2-digit",
+		year: "numeric",
+	});
+
 	return (
 		<>
 			<Fieldset legend={comment.postTitle} toggleable>
 				<p>{comment.text}</p>
-				<p>Created at: {comment.createdAt}</p>
-				<p>Updated at: {comment.updatedAt}</p>
+				<p>Created at: {dateFormmater.format(new Date(comment.createdAt))}</p>
+				<p>Updated at: {dateFormmater.format(new Date(comment.updatedAt))}</p>
 				<SplitButton label="Edit" icon="pi pi-file-edit" model={items} />
 			</Fieldset>
 		</>
