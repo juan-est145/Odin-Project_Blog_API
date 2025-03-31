@@ -38,6 +38,23 @@ export class PostsService {
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError)
 				throw new NotFoundException();
+			throw new InternalServerErrorException();
+		}
+	}
+
+	async createPost(
+		title: string,
+		userId: number,
+		text: string,
+		published: boolean,
+		subtitle?: string,
+	) {
+		try {
+			return await this.prisma.posts.create({
+				data: { title, userId, subtitle, text, published },
+			});
+		} catch {
+			throw new InternalServerErrorException();
 		}
 	}
 }

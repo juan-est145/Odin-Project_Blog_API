@@ -1,5 +1,6 @@
 import {
 	Controller,
+	Post,
 	Get,
 	Query,
 	Delete,
@@ -11,6 +12,7 @@ import { CommentsService } from "../comments/comments.service";
 import {
 	AccntCommentsDto,
 	CommentIdParam,
+	CreatePostBodyDto,
 	DeleteCommentRes,
 	QueryGetCommentsDto,
 } from "./accnt.dto";
@@ -26,11 +28,15 @@ import { User } from "../users/user.decorator";
 import { JwtPayload } from "../auth/auth.dto";
 import { ForbiddenRequestErrorDto, InvalidRequestErrorDto } from "../v1.dto";
 import { PostCommentsDto } from "../posts/posts.dto";
+import { PostsService } from "../posts/posts.service";
 
 @UseGuards(AuthGuard)
 @Controller()
 export class AccntController {
-	constructor(private comment: CommentsService) {}
+	constructor(
+		private comment: CommentsService,
+		private post: PostsService,
+	) {}
 	@Get("/comments")
 	@ApiBearerAuth()
 	@ApiOkResponse({
@@ -128,5 +134,17 @@ export class AccntController {
 			updatedAt: comment.updatedAt,
 			postTitle: comment.Posts.title,
 		};
+	}
+
+	@Post("/posts")
+	async createPost(@Body() body: CreatePostBodyDto, @User() user: JwtPayload) {
+		const published: boolean = body.publish === "1" || body.publish === "true";
+		return await this.post.createPost(
+			body.title,
+			user.id,
+			body.text,
+			published,
+			body.subtitle,
+		);
 	}
 }

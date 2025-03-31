@@ -6,6 +6,7 @@ import { CommentsModule } from "../comments/comments.module";
 
 @Module({
 	imports: [PrismaModule, CommentsModule],
+	exports: [PostsService],
 	controllers: [PostsController],
 	providers: [PostsService],
 })
