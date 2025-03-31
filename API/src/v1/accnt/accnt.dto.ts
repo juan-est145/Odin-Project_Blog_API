@@ -1,6 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Comments } from "@prisma/client";
-import { IsOptional, IsInt, IsPositive, IsUUID } from "class-validator";
+import {
+	IsOptional,
+	IsInt,
+	IsPositive,
+	IsUUID,
+	Length,
+	IsBooleanString,
+} from "class-validator";
 
 export class QueryGetCommentsDto {
 	@ApiProperty({
@@ -45,4 +52,44 @@ export class DeleteCommentRes {
 	code: number;
 	@ApiProperty()
 	message: string;
+}
+
+export class CreatePostBodyDto {
+	static readonly minLength: number = 1;
+	static readonly maxTitleLength: number = 255;
+	static readonly maxSubtitleLenght: number = 255;
+	static readonly maxTextLength: number = 16724;
+
+	@ApiProperty({
+		additionalProperties: {
+			maxLength: CreatePostBodyDto.maxTitleLength,
+			minLength: CreatePostBodyDto.minLength,
+		},
+	})
+	@Length(CreatePostBodyDto.minLength, CreatePostBodyDto.maxTitleLength)
+	title: string;
+
+	@ApiProperty({
+		required: false,
+		additionalProperties: {
+			maxLength: CreatePostBodyDto.maxSubtitleLenght,
+			minLength: CreatePostBodyDto.minLength,
+		},
+	})
+	@IsOptional()
+	@Length(CreatePostBodyDto.minLength, CreatePostBodyDto.maxSubtitleLenght)
+	subtitle?: string;
+
+	@ApiProperty({
+		additionalProperties: {
+			maxLength: CreatePostBodyDto.maxTextLength,
+			minLength: CreatePostBodyDto.minLength,
+		},
+	})
+	@Length(CreatePostBodyDto.minLength, CreatePostBodyDto.maxTextLength)
+	text: string;
+
+	@ApiProperty()
+	@IsBooleanString()
+	publish: "true" | "false" | "1" | "0";
 }
