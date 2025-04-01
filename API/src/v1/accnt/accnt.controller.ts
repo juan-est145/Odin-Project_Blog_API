@@ -28,11 +28,12 @@ import {
 import { User } from "../users/user.decorator";
 import { JwtPayload } from "../auth/auth.dto";
 import { ForbiddenRequestErrorDto, InvalidRequestErrorDto } from "../v1.dto";
-import { PostCommentsDto, PostDto } from "../posts/posts.dto";
+import { PostCommentsDto, PostDto, QueryGetPostsDto } from "../posts/posts.dto";
 import { PostsService } from "../posts/posts.service";
 import { Roles } from "../auth/auth.decorator";
 
 @UseGuards(AuthGuard)
+@ApiBearerAuth()
 @Controller()
 export class AccntController {
 	constructor(
@@ -40,7 +41,6 @@ export class AccntController {
 		private post: PostsService,
 	) {}
 	@Get("/comments")
-	@ApiBearerAuth()
 	@ApiOkResponse({
 		description: "Returns the comments made by the user",
 		type: AccntCommentsDto,
@@ -74,7 +74,6 @@ export class AccntController {
 	}
 
 	@Delete("/comments/:commentId")
-	@ApiBearerAuth()
 	@ApiBadRequestResponse({
 		description: "If the request is invalid, it returns the error",
 		type: InvalidRequestErrorDto,
@@ -103,7 +102,6 @@ export class AccntController {
 	}
 
 	@Put("/comments/:commentId")
-	@ApiBearerAuth()
 	@ApiOkResponse({
 		description: "Returns the data of the updated comment",
 		type: AccntCommentsDto,
@@ -138,9 +136,21 @@ export class AccntController {
 		};
 	}
 
+	@Get("/posts")
+	@Roles("POSTER")
+	async getAccntPosts(
+		@Query() query: QueryGetPostsDto,
+		@User() user: JwtPayload,
+	): Promise<PostDto[]> {
+		let published: undefined | boolean = undefined;
+		if (query.published) {
+			published = query.published === "true" || query.published === "1";
+		}
+		return await this.post.findUserPosts(query.nmbOfPosts, user.id, published);
+	}
+
 	@Post("/posts")
 	@Roles("POSTER")
-	@ApiBearerAuth()
 	@ApiCreatedResponse({
 		description: "Returns the created post",
 		type: PostDto,

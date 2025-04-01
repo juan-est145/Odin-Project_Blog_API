@@ -26,6 +26,7 @@ export class PostsService {
 			throw new InternalServerErrorException();
 		}
 	}
+
 	async findOne(
 		id: string,
 		published: boolean = true,
@@ -52,6 +53,24 @@ export class PostsService {
 		try {
 			return await this.prisma.posts.create({
 				data: { title, userId, subtitle, text, published },
+			});
+		} catch {
+			throw new InternalServerErrorException();
+		}
+	}
+
+	async findUserPosts(
+		nmbOfPosts: number = 10,
+		userId: number,
+		published?: boolean,
+	) {
+		try {
+			const whereClause =
+				published === undefined ? { userId } : { userId, published };
+			return await this.prisma.posts.findMany({
+				where: whereClause,
+				take: nmbOfPosts,
+				orderBy: { updatedAt: "desc" },
 			});
 		} catch {
 			throw new InternalServerErrorException();
