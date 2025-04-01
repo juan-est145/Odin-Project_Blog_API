@@ -26,17 +26,17 @@ export function PostCreator() {
 	return (
 		<>
 			<InputField
-			id="title"
-			value={title}
-			onChange={setTitle}
-			labelText="Title (required)"
+				id="title"
+				value={title}
+				onChange={setTitle}
+				labelText="Title (required)"
 			></InputField>
 			<Divider />
 			<InputField
-			id="subtitle"
-			value={subtitle}
-			onChange={setSubtitle}
-			labelText="Subtitle (optional)"
+				id="subtitle"
+				value={subtitle}
+				onChange={setSubtitle}
+				labelText="Subtitle (optional)"
 			></InputField>
 			<Divider />
 			<Editor
