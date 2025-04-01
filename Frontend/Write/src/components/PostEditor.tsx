@@ -9,9 +9,10 @@ export function PostEditor() {
 		promise.then((element) => setPosts(element.data ? element.data : []))
 			.catch(() => alert("Something went wrong, please try again at a later time"));
 	}, []);
+
 	return (
 		<>
-			{ posts.map((element) => {
+			{posts.map((element) => {
 				return <Post data={element} key={element.id}></Post>
 			})}
 		</>
