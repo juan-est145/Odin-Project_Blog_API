@@ -14,7 +14,7 @@ export function PostCreator() {
 	const [subtitle, setSubtitle] = useState<string>();
 	const [text, setText] = useState<string>("");
 	const items: MenuItem[] = [
-		{ label: "Publish", icon: "pi pi-check", command: () => alert("Nothing yet") }
+		{ label: "Publish", icon: "pi pi-check", command: async () => await publishPost() }
 	];
 	const toast = useRef<Toast>(null);
 
@@ -23,6 +23,17 @@ export function PostCreator() {
 			{ body: { title, subtitle, text: text.substring(0, text.length - 1), publish } }
 		);
 		return data ? data : error;
+	}
+
+	async function publishPost() {
+		const result = await createPost("true");
+		if (isPostResponse(result)) {
+			return toast.current?.show({ severity: "success", summary: "The post was published sucessfully" });
+		}
+		const toastOpts: ToastMessage[] = result.message instanceof Array ?
+			result.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage)) :
+			[{ severity: "error", summary: result.message }];
+		return toast.current?.show(toastOpts);
 	}
 
 	async function savePost() {

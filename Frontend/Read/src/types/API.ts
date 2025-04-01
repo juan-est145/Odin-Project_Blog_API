@@ -116,6 +116,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/accnt/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AccntController_createPost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -232,6 +248,16 @@ export interface components {
             /** @example 200 */
             code: number;
             message: string;
+        };
+        CreatePostBodyDto: {
+            title: string;
+            subtitle?: string;
+            text: string;
+            /**
+             * @description Indicates whether the post should be published. Accepts 'true', 'false', '1', or '0'.
+             * @enum {string}
+             */
+            publish: "true" | "false" | "1" | "0";
         };
     };
     responses: never;
@@ -595,6 +621,48 @@ export interface operations {
                 };
             };
             /** @description Returns an error if not using jwt or an invalid one or if comment id does not belong to the user */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_createPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePostBodyDto"];
+            };
+        };
+        responses: {
+            /** @description Returns the created post */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDto"];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if the user is not a poster */
             403: {
                 headers: {
                     [name: string]: unknown;
