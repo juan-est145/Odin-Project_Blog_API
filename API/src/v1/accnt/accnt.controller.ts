@@ -30,6 +30,7 @@ import { JwtPayload } from "../auth/auth.dto";
 import { ForbiddenRequestErrorDto, InvalidRequestErrorDto } from "../v1.dto";
 import { PostCommentsDto, PostDto } from "../posts/posts.dto";
 import { PostsService } from "../posts/posts.service";
+import { Roles } from "../auth/auth.decorator";
 
 @UseGuards(AuthGuard)
 @Controller()
@@ -138,6 +139,7 @@ export class AccntController {
 	}
 
 	@Post("/posts")
+	@Roles("POSTER")
 	@ApiBearerAuth()
 	@ApiCreatedResponse({
 		description: "Returns the created post",
