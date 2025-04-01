@@ -253,7 +253,11 @@ export interface components {
             title: string;
             subtitle?: string;
             text: string;
-            publish: Record<string, never>;
+            /**
+             * @description Indicates whether the post should be published. Accepts 'true', 'false', '1', or '0'.
+             * @enum {string}
+             */
+            publish: "true" | "false" | "1" | "0";
         };
     };
     responses: never;
@@ -640,11 +644,32 @@ export interface operations {
             };
         };
         responses: {
+            /** @description Returns the created post */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["PostDto"];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if the user is not a poster */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
             };
         };
     };
