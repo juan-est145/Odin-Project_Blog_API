@@ -138,6 +138,21 @@ export class AccntController {
 
 	@Get("/posts")
 	@Roles("POSTER")
+	@ApiOkResponse({
+		description:
+			"Returns the posts of the user. The default value is 10. If a higher value is specified than the ones in the database, it returns the maximum amount of posts there is",
+		type: PostDto,
+		isArray: true,
+	})
+	@ApiBadRequestResponse({
+		description: "If the request is invalid, it returns the error",
+		type: InvalidRequestErrorDto,
+	})
+	@ApiForbiddenResponse({
+		description:
+			"Returns an error if not using jwt or an invalid one or if the user is not a poster",
+		type: ForbiddenRequestErrorDto,
+	})
 	async getAccntPosts(
 		@Query() query: QueryGetPostsDto,
 		@User() user: JwtPayload,
