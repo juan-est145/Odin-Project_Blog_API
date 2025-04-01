@@ -116,6 +116,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/accnt/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AccntController_createPost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -232,6 +248,12 @@ export interface components {
             /** @example 200 */
             code: number;
             message: string;
+        };
+        CreatePostBodyDto: {
+            title: string;
+            subtitle?: string;
+            text: string;
+            publish: Record<string, never>;
         };
     };
     responses: never;
@@ -602,6 +624,27 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
                 };
+            };
+        };
+    };
+    AccntController_createPost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePostBodyDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

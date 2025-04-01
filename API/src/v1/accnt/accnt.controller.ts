@@ -21,13 +21,14 @@ import { AuthGuard } from "../auth/guard/auth.guard";
 import {
 	ApiBadRequestResponse,
 	ApiBearerAuth,
+	ApiCreatedResponse,
 	ApiForbiddenResponse,
 	ApiOkResponse,
 } from "@nestjs/swagger";
 import { User } from "../users/user.decorator";
 import { JwtPayload } from "../auth/auth.dto";
 import { ForbiddenRequestErrorDto, InvalidRequestErrorDto } from "../v1.dto";
-import { PostCommentsDto } from "../posts/posts.dto";
+import { PostCommentsDto, PostDto } from "../posts/posts.dto";
 import { PostsService } from "../posts/posts.service";
 
 @UseGuards(AuthGuard)
@@ -137,7 +138,24 @@ export class AccntController {
 	}
 
 	@Post("/posts")
-	async createPost(@Body() body: CreatePostBodyDto, @User() user: JwtPayload) {
+	@ApiBearerAuth()
+	@ApiCreatedResponse({
+		description: "Returns the created post",
+		type: PostDto,
+	})
+	@ApiBadRequestResponse({
+		description: "If the request is invalid, it returns the error",
+		type: InvalidRequestErrorDto,
+	})
+	@ApiForbiddenResponse({
+		description:
+			"Returns an error if not using jwt or an invalid one or if the user is not a poster",
+		type: ForbiddenRequestErrorDto,
+	})
+	async createPost(
+		@Body() body: CreatePostBodyDto,
+		@User() user: JwtPayload,
+	): Promise<PostDto> {
 		const published: boolean = body.publish === "1" || body.publish === "true";
 		return await this.post.createPost(
 			body.title,

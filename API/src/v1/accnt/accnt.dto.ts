@@ -89,7 +89,11 @@ export class CreatePostBodyDto {
 	@Length(CreatePostBodyDto.minLength, CreatePostBodyDto.maxTextLength)
 	text: string;
 
-	@ApiProperty()
+	@ApiProperty({
+		enum: ["true", "false", "1", "0"],
+		description:
+			"Indicates whether the post should be published. Accepts 'true', 'false', '1', or '0'.",
+	})
 	@IsBooleanString()
 	publish: "true" | "false" | "1" | "0";
 }
