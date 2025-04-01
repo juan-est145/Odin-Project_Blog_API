@@ -123,7 +123,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["AccntController_getAccntPosts"];
         put?: never;
         post: operations["AccntController_createPost"];
         delete?: never;
@@ -621,6 +621,49 @@ export interface operations {
                 };
             };
             /** @description Returns an error if not using jwt or an invalid one or if comment id does not belong to the user */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_getAccntPosts: {
+        parameters: {
+            query?: {
+                /** @description The number of posts you wished returned. It must be a positive number, and if it exceeds the total amount of posts, it returns all of them */
+                nmbOfPosts?: number;
+                /** @description If present returns either only either published posts or non-published posts. Leave empty if you want all of them */
+                published?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the posts of the user. The default value is 10. If a higher value is specified than the ones in the database, it returns the maximum amount of posts there is */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDto"][];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if the user is not a poster */
             403: {
                 headers: {
                     [name: string]: unknown;

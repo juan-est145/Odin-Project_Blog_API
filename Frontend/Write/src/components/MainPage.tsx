@@ -5,6 +5,7 @@ import { CommentsSection } from "./CommentEditor";
 import { TabMenu } from "primereact/tabmenu";
 import { useState } from "react";
 import { PostCreator } from "./PostCreator";
+import { PostEditor } from "./PostEditor";
 
 export default function MainPage() {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -16,6 +17,7 @@ export default function MainPage() {
 	const components: JSX.Element[] = [
 		<CommentsSection />,
 		<PostCreator/>,
+		<PostEditor/>
 	];
 
 	const { loggedIn } = useAuth();
