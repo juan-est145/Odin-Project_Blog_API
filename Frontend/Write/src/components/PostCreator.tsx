@@ -2,11 +2,12 @@ import { Divider } from "primereact/divider";
 import { Editor } from "primereact/editor";
 import { MenuItem } from "primereact/menuitem";
 import { SplitButton } from "primereact/splitbutton";
-import { useState, Dispatch, SetStateAction } from "react";
-import { BoolString } from "../types/types";
+import { useState, Dispatch, SetStateAction, useRef } from "react";
+import { BoolString, isPostResponse } from "../types/types";
 import { InputText } from "primereact/inputtext";
 import apiClient from "../APiClient";
 import { FloatLabel } from "primereact/floatlabel";
+import { Toast, ToastMessage } from "primereact/toast";
 
 export function PostCreator() {
 	const [title, setTitle] = useState<string>("");
@@ -15,16 +16,29 @@ export function PostCreator() {
 	const items: MenuItem[] = [
 		{ label: "Publish", icon: "pi pi-check", command: () => alert("Nothing yet") }
 	];
+	const toast = useRef<Toast>(null);
 
 	async function createPost(publish: BoolString) {
 		const { data, error } = await apiClient.POST("/v1/accnt/posts",
-			{ body: { title, subtitle, text, publish } }
+			{ body: { title, subtitle, text: text.substring(0, text.length - 1), publish } }
 		);
 		return data ? data : error;
 	}
 
+	async function savePost() {
+		const result = await createPost("false");
+		if (isPostResponse(result)) {
+			return toast.current?.show({ severity: "success", summary: "The post was created sucessfully" });
+		}
+		const toastOpts: ToastMessage[] = result.message instanceof Array ?
+			result.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage)) :
+			[{ severity: "error", summary: result.message }];
+		return toast.current?.show(toastOpts);
+	}
+
 	return (
 		<>
+			<Toast ref={toast}></Toast>
 			<InputField
 				id="title"
 				value={title}
@@ -47,7 +61,8 @@ export function PostCreator() {
 			<SplitButton
 				icon={"pi pi-save"}
 				label={"Save"}
-				model={items}></SplitButton>
+				model={items}
+				onClick={async () => savePost()}></SplitButton>
 		</>
 	);
 }
