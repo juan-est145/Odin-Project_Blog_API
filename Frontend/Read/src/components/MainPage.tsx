@@ -141,7 +141,7 @@ function PostsCard({ postInfo }: { postInfo: Posts }) {
 	const text: string = postInfo.text.substring(0, 200)
 
 	return (
-		<Card className="flex-1 flex justify-content-center align-content-center w-2rem">
+		<Card className="flex-1 flex justify-content-center align-content-center w-2rem" style={{ minWidth: "300px" }}>
 			<Link className="no-underline text-white" to={`/post/${postInfo.id}`}>
 				<img src={postImage} alt="An image of text" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
 				<div>

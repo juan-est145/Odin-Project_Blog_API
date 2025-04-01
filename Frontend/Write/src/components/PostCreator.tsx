@@ -14,7 +14,7 @@ export function PostCreator() {
 	const [subtitle, setSubtitle] = useState<string>();
 	const [text, setText] = useState<string>("");
 	const items: MenuItem[] = [
-		{ label: "Publish", icon: "pi pi-check", command: async () => await publishPost() }
+		{ label: "Publish", icon: "pi pi-check", command: async () => await handlePost("true") }
 	];
 	const toast = useRef<Toast>(null);
 
@@ -25,21 +25,11 @@ export function PostCreator() {
 		return data ? data : error;
 	}
 
-	async function publishPost() {
-		const result = await createPost("true");
+	async function handlePost(publish: BoolString) {
+		const result = await createPost(publish);
+		const boolPub = publish === "true" || publish === "1";
 		if (isPostResponse(result)) {
-			return toast.current?.show({ severity: "success", summary: "The post was published sucessfully" });
-		}
-		const toastOpts: ToastMessage[] = result.message instanceof Array ?
-			result.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage)) :
-			[{ severity: "error", summary: result.message }];
-		return toast.current?.show(toastOpts);
-	}
-
-	async function savePost() {
-		const result = await createPost("false");
-		if (isPostResponse(result)) {
-			return toast.current?.show({ severity: "success", summary: "The post was created sucessfully" });
+			return toast.current?.show({ severity: "success", summary: `The post was ${boolPub ? "published" : "created" } sucessfully` });
 		}
 		const toastOpts: ToastMessage[] = result.message instanceof Array ?
 			result.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage)) :
@@ -73,7 +63,7 @@ export function PostCreator() {
 				icon={"pi pi-save"}
 				label={"Save"}
 				model={items}
-				onClick={async () => savePost()}></SplitButton>
+				onClick={async () => handlePost("false")}></SplitButton>
 		</>
 	);
 }
