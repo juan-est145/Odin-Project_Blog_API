@@ -7,7 +7,12 @@ import { ValidationPipe, ValidationPipeOptions } from "@nestjs/common";
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 	app.enableCors({
-		origin: ["http://localhost:5173", "http://localhost:5174"],
+		origin: [
+			"http://localhost:5173",
+			"http://localhost:5174",
+			process.env.READ_URL as string,
+			process.env.WRITE_URL as string,
+		],
 	});
 	const valPipeOpts: ValidationPipeOptions = {
 		whitelist: true,
