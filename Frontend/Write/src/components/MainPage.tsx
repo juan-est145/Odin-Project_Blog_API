@@ -6,27 +6,34 @@ import { TabMenu } from "primereact/tabmenu";
 import { useState } from "react";
 import { PostCreator } from "./PostCreator";
 import { PostEditor } from "./PostEditor";
+import { UpgradeAccnt } from "./UpgradeAccount";
 
 export default function MainPage() {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
-	const items: MenuItem[] = [
+	const posterItems: MenuItem[] = [
 		{ label: "Your comments", icon: "pi pi-comments" },
 		{ label: "Create a new post", icon: "pi pi-file-edit" },
 		{ label: "Your posts", icon: "pi pi-file" },
 	];
-	const components: JSX.Element[] = [
+	const userItems: MenuItem[] = [
+		{ label: "Your comments", icon: "pi pi-comments" },
+		{ label: "Upgrade your account", icon: "pi pi-users-plus" },
+	]
+	const { loggedIn } = useAuth();
+	const posterMenu: JSX.Element[] = [
 		<CommentsSection />,
 		<PostCreator/>,
 		<PostEditor/>
 	];
-
-	const { loggedIn } = useAuth();
+	const userMenu: JSX.Element[] = [
+		<CommentsSection/>,
+		<UpgradeAccnt/>
+	];
 	return (
 		<>
-			{loggedIn ? <h1>You are logged in</h1> : <h1>You are not logged in</h1>}
-			<TabMenu model={items} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}></TabMenu>
+			<TabMenu model={loggedIn? posterItems : userItems} activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}></TabMenu>
 			<Divider />
-			{components[activeIndex]}
+			{ posterMenu[activeIndex]}
 		</>
 	);
 }
