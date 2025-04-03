@@ -14,7 +14,7 @@ import {
 	CommentIdParam,
 	CreatePostBodyDto,
 	DeleteCommentRes,
-	PutPostParam,
+	PostReqParam,
 	QueryGetCommentsDto,
 } from "./accnt.dto";
 import { UseGuards } from "@nestjs/common";
@@ -210,7 +210,7 @@ export class AccntController {
 		type: ForbiddenRequestErrorDto,
 	})
 	async updatePost(
-		@Param() param: PutPostParam,
+		@Param() param: PostReqParam,
 		@Body() body: CreatePostBodyDto,
 		@User() user: JwtPayload,
 	): Promise<PostDto> {
@@ -222,5 +222,24 @@ export class AccntController {
 			body.text,
 			published,
 		);
+	}
+
+	@Delete("/posts/:postId")
+	@Roles("POSTER")
+	@ApiOkResponse({
+		description: "Returns the deleted post",
+		type: PostDto,
+	})
+	@ApiBadRequestResponse({
+		description: "If the request is invalid, it returns the error",
+		type: InvalidRequestErrorDto,
+	})
+	@ApiForbiddenResponse({
+		description:
+			"Returns an error if not using jwt or an invalid one or if the user is not a poster",
+		type: ForbiddenRequestErrorDto,
+	})
+	async deletePost(@User() user: JwtPayload, @Param() param: PostReqParam) {
+		return await this.post.deletePost(user.id, param.postId);
 	}
 }

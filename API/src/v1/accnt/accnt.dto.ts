@@ -98,7 +98,7 @@ export class CreatePostBodyDto {
 	publish: "true" | "false" | "1" | "0";
 }
 
-export class PutPostParam {
+export class PostReqParam {
 	@ApiProperty()
 	@IsUUID()
 	postId: string;

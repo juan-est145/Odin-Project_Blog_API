@@ -2,6 +2,7 @@ import {
 	Injectable,
 	InternalServerErrorException,
 	NotFoundException,
+	UnauthorizedException,
 } from "@nestjs/common";
 import { DbService } from "src/db/db.service";
 import { Posts } from "@prisma/client";
@@ -91,6 +92,21 @@ export class PostsService {
 				data: { title, text, published, subtitle },
 			});
 		} catch {
+			throw new InternalServerErrorException();
+		}
+	}
+
+	async deletePost(userId: number, postId: string) {
+		try {
+			return await this.prisma.posts.delete({
+				where: { userId, id: postId },
+			});
+		} catch (error) {
+			if (
+				error instanceof PrismaClientKnownRequestError &&
+				error.code === "P2016"
+			)
+				throw new UnauthorizedException();
 			throw new InternalServerErrorException();
 		}
 	}
