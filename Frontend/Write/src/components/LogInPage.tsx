@@ -5,7 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { Toast, ToastMessage } from "primereact/toast";
 import { Password } from "primereact/password";
 import { useEffect, useRef, useState } from "react";
-import { Link, NavigateFunction, useNavigate } from "react-router";
+import { NavigateFunction, useNavigate } from "react-router";
 import { useAuth } from "../Context";
 import apiClient from "../APiClient";
 
@@ -30,7 +30,10 @@ export function LogIn() {
 				redirect("/");
 				return;
 			}
-			const toastOpts: ToastMessage[] = [...error.message.map((element) => Object.assign<object, ToastMessage>({}, { severity: "error", summary: element }))];
+			const toastOpts: ToastMessage[] = error.message instanceof Array ?
+				error.message.map((element) => Object.assign<object, ToastMessage>({}, { severity: "error", summary: element }))
+				:
+				[{ severity: "error", summary: error.message }];
 			return toast.current?.show(toastOpts);
 		} catch {
 			return toast.current?.show(error500Toast);
@@ -70,9 +73,6 @@ export function LogIn() {
 								required />
 							<label htmlFor="password">Password</label>
 						</FloatLabel>
-						<span className="align-self-center">
-							Don't have an account? <Link to={"/sign-in"} style={{ color: "var(--primary-color)" }}>Sign in</Link>
-						</span>
 						<Button className="align-self-center" onClick={async () => await postLogin()}>Log in</Button>
 					</div>
 				</Card>
