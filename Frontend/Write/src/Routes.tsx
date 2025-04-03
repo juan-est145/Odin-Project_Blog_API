@@ -1,11 +1,13 @@
 import { RouteObject } from "react-router";
 import MainPage from "./components/MainPage";
 import { LogIn } from "./components/LogInPage";
+import { ErrorPage } from "./components/ErrorPage";
 
 const routes: RouteObject[] = [
 	{
 		path: "/",
-		element: <MainPage />
+		element: <MainPage />,
+		errorElement: <ErrorPage/>
 	},
 	{
 		path: "/log-in",
