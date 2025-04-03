@@ -21,17 +21,31 @@ export function PostEditor() {
 	return (
 		<>
 			{posts.map((element) => {
-				return <PostCard data={element} posts={posts} setPosts={setPosts} key={element.id}></PostCard>
+				return <PostCard postData={element} posts={posts} setPosts={setPosts} key={element.id}></PostCard>
 			})}
 		</>
 	);
 }
 
-function PostCard({ data, posts, setPosts }: { data: Posts, posts: Posts[], setPosts: Dispatch<SetStateAction<Posts[]>> }) {
+function PostCard({ postData, posts, setPosts }: { postData: Posts, posts: Posts[], setPosts: Dispatch<SetStateAction<Posts[]>> }) {
 	const [editorActive, setEditor] = useState<boolean>(false);
 
+	async function deletePost() {
+		const { data, error } = await apiClient.DELETE("/v1/accnt/posts/{postId}", {
+			params: { path: { postId: postData.id }}
+		});
+		if (data) {
+			const updatedPosts = posts.filter((element) => element.id !== data.id);
+			setPosts(updatedPosts);
+		}
+		else if (error.statusCode < 500)
+			alert("That operation is not allowed");
+		else
+			alert("Something went wrong, please try again at a later time");
+	}
+
 	const items: MenuItem[] = [
-		{ label: "Delete comment", icon: "pi pi-trash", command: () => alert("This is here for now") },
+		{ label: "Delete comment", icon: "pi pi-trash", command: async () => await deletePost() },
 	];
 
 	return (
@@ -39,19 +53,19 @@ function PostCard({ data, posts, setPosts }: { data: Posts, posts: Posts[], setP
 			{
 				editorActive ?
 					<PostQuillEditor
-						postData={data}
+						postData={postData}
 						posts={posts}
 						setPosts={setPosts}
 						setEditor={setEditor}>
 					</PostQuillEditor>
 					:
 					<>
-						<Fieldset legend={data.title} toggleable>
-							{data.subtitle ? <h3>{data.subtitle}</h3> : null}
-							<p>{data.text}</p>
-							<p><b className="underline">Created at:</b> {dateFormater(data.createdAt)}</p>
-							<p><b className="underline">Updated at:</b> {dateFormater(data.updatedAt)}</p>
-							<p><b className="underline">Status:</b> {data.published ? "Published" : "Not published"}</p>
+						<Fieldset legend={postData.title} toggleable>
+							{postData.subtitle ? <h3>{postData.subtitle}</h3> : null}
+							<p>{postData.text}</p>
+							<p><b className="underline">Created at:</b> {dateFormater(postData.createdAt)}</p>
+							<p><b className="underline">Updated at:</b> {dateFormater(postData.updatedAt)}</p>
+							<p><b className="underline">Status:</b> {postData.published ? "Published" : "Not published"}</p>
 							<SplitButton label="Edit" icon="pi pi-file-edit" model={items} onClick={() => setEditor(true)}></SplitButton>
 						</Fieldset>
 						<Divider />

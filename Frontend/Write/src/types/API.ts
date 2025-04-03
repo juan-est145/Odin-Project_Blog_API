@@ -142,7 +142,7 @@ export interface paths {
         get?: never;
         put: operations["AccntController_updatePost"];
         post?: never;
-        delete?: never;
+        delete: operations["AccntController_deletePost"];
         options?: never;
         head?: never;
         patch?: never;
@@ -757,6 +757,46 @@ export interface operations {
             };
             /** @description Returns the updated post */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDto"];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if the user is not a poster */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_deletePost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the deleted post */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
