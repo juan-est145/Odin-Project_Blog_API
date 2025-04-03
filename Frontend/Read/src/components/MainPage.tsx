@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { Card } from "primereact/card";
 import { Toolbar } from "primereact/toolbar";
-import { HtmlHTMLAttributes, useEffect, useState, Dispatch, SetStateAction } from "react";
+import { HtmlHTMLAttributes, useEffect, useState, Dispatch, SetStateAction, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo42 from "#project/src/assets/42Logo.jpg"
 import postImage from "#project/src/assets/pexels-pixabay-261763.jpg";
@@ -10,6 +10,9 @@ import { useAuth } from "#project/src/Context";
 import { Skeleton } from "primereact/skeleton";
 import { Posts } from "../types/types";
 import apiClient from "../ApiClient";
+import { Avatar } from "primereact/avatar";
+import { Menu } from "primereact/menu";
+import { MenuItem } from "primereact/menuitem";
 
 
 export default function MainPage() {
@@ -89,31 +92,29 @@ function TBStart() {
 
 function TBEnd() {
 	const { loggedIn, setLoggedIn } = useAuth();
-	const redirect = useNavigate()
 
 	return (
 		<>
 			<div className="flex gap-3">
-				{loggedIn ? (
-					<Button outlined onClick={() => {
-						localStorage.removeItem("jwt");
-						setLoggedIn(false);
-						redirect("/");
-					}}>Log out</Button>
-				) : (
+				{loggedIn ?
 					<>
-						<Link to={"/sign-in"}>
-							<Button>
-								Sign in
-							</Button>
-						</Link>
-						<Link to={"/log-in"}>
-							<Button outlined>
-								Log in
-							</Button>
-						</Link>
+						<AccntButton setLoggedIn={setLoggedIn}></AccntButton>
 					</>
-				)}
+
+					: (
+						<>
+							<Link to={"/sign-in"}>
+								<Button>
+									Sign in
+								</Button>
+							</Link>
+							<Link to={"/log-in"}>
+								<Button outlined>
+									Log in
+								</Button>
+							</Link>
+						</>
+					)}
 			</div>
 		</>
 	);
@@ -152,5 +153,25 @@ function PostsCard({ postInfo }: { postInfo: Posts }) {
 				</div>
 			</Link>
 		</Card>
+	);
+}
+
+function AccntButton({ setLoggedIn }: { setLoggedIn: (loggedIn: boolean) => void }) {
+	const menu = useRef<Menu>(null);
+	const items: MenuItem[] = [
+		{ label: "Account", icon: "pi pi-home", url: import.meta.env.VITE_WRITE_HOST },
+		{ label: "Log out", icon: "pi pi-sign-out" ,command: () => {
+			localStorage.removeItem("jwt");
+			setLoggedIn(false);
+			redirect("/");
+		}},
+	];
+	const redirect = useNavigate()
+
+	return (
+		<>
+			<Avatar icon="pi pi-user" shape="circle" size="large" onClick={(e) => menu.current?.toggle(e)}></Avatar>
+			<Menu model={items} popup ref={menu}></Menu>
+		</>
 	);
 }
