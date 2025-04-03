@@ -14,7 +14,7 @@ import {
 	CommentIdParam,
 	CreatePostBodyDto,
 	DeleteCommentRes,
-	PutBodyDto,
+	PutPostParam,
 	QueryGetCommentsDto,
 } from "./accnt.dto";
 import { UseGuards } from "@nestjs/common";
@@ -194,7 +194,7 @@ export class AccntController {
 		);
 	}
 
-	@Put("/posts")
+	@Put("/posts/:postId")
 	@Roles("POSTER")
 	@ApiCreatedResponse({
 		description: "Returns the updated post",
@@ -210,13 +210,14 @@ export class AccntController {
 		type: ForbiddenRequestErrorDto,
 	})
 	async updatePost(
-		@Body() body: PutBodyDto,
+		@Param() param: PutPostParam,
+		@Body() body: CreatePostBodyDto,
 		@User() user: JwtPayload,
 	): Promise<PostDto> {
 		const published: boolean = body.publish === "1" || body.publish === "true";
 		return await this.post.updatePost(
 			body.title,
-			body.postId,
+			param.postId,
 			user.id,
 			body.text,
 			published,
