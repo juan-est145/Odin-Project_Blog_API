@@ -3,6 +3,7 @@ import { components } from "./API";
 export type Comments = components["schemas"]["AccntCommentsDto"];
 export type BoolString = components["schemas"]["CreatePostBodyDto"]["publish"];
 export type Posts = components["schemas"]["PostDto"];
+export type AccntStatus = components["schemas"]["UpgradeAccntRes"]["role"];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isPostResponse(value: any): value is Posts {
 	return (
