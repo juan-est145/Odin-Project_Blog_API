@@ -14,6 +14,7 @@ import {
 	CommentIdParam,
 	CreatePostBodyDto,
 	DeleteCommentRes,
+	PutBodyDto,
 	QueryGetCommentsDto,
 } from "./accnt.dto";
 import { UseGuards } from "@nestjs/common";
@@ -190,6 +191,35 @@ export class AccntController {
 			body.text,
 			published,
 			body.subtitle,
+		);
+	}
+
+	@Put("/posts")
+	@Roles("POSTER")
+	@ApiCreatedResponse({
+		description: "Returns the updated post",
+		type: PostDto,
+	})
+	@ApiBadRequestResponse({
+		description: "If the request is invalid, it returns the error",
+		type: InvalidRequestErrorDto,
+	})
+	@ApiForbiddenResponse({
+		description:
+			"Returns an error if not using jwt or an invalid one or if the user is not a poster",
+		type: ForbiddenRequestErrorDto,
+	})
+	async updatePost(
+		@Body() body: PutBodyDto,
+		@User() user: JwtPayload,
+	): Promise<PostDto> {
+		const published: boolean = body.publish === "1" || body.publish === "true";
+		return await this.post.updatePost(
+			body.title,
+			body.postId,
+			user.id,
+			body.text,
+			published,
 		);
 	}
 }

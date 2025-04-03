@@ -76,4 +76,22 @@ export class PostsService {
 			throw new InternalServerErrorException();
 		}
 	}
+
+	async updatePost(
+		title: string,
+		postId: string,
+		userId: number,
+		text: string,
+		published: boolean,
+		subtitle?: string,
+	) {
+		try {
+			return await this.prisma.posts.update({
+				where: { userId, id: postId },
+				data: { title, text, published, subtitle },
+			});
+		} catch {
+			throw new InternalServerErrorException();
+		}
+	}
 }

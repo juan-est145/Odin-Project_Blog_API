@@ -97,3 +97,9 @@ export class CreatePostBodyDto {
 	@IsBooleanString()
 	publish: "true" | "false" | "1" | "0";
 }
+
+export class PutBodyDto extends CreatePostBodyDto {
+	@ApiProperty()
+	@IsUUID()
+	postId: string;
+}
