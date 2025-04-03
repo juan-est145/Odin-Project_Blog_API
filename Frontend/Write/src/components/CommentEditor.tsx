@@ -13,8 +13,9 @@ import { dateFormater } from "../auxFunc";
 
 export function CommentsSection() {
 	const [comments, setComments] = useState<Comments[]>([]);
+	const [nmbOfCmmnts, setNmbOfCmmnts] = useState<number>(10);
 	useEffect(() => {
-		const promise = apiClient.GET("/v1/accnt/comments");
+		const promise = apiClient.GET("/v1/accnt/comments", { params: { query: { nmbOfCmmnts } } });
 		promise.then((value) => {
 			if (value.data)
 				setComments(value.data);
@@ -22,17 +23,27 @@ export function CommentsSection() {
 				console.error("No data");
 		});
 		promise.catch(() => alert("Something went wrong, please try again at a later time"));
-	}, []);
+	}, [nmbOfCmmnts]);
 	return (
 		<>
 			<div className="flex min-w-full flex-column justify-content-center gap-1">
-				{comments.length > 0 ? comments.map((element) => {
-					return <CommentCard
-						key={element.id}
-						comment={element}
-						comments={comments}
-						setComments={setComments}></CommentCard>
-				}) : <h1>You have no comments yet</h1>}
+				{comments.length > 0 ?
+					<>
+						{
+							comments.map((element) => {
+								return <CommentCard
+									key={element.id}
+									comment={element}
+									comments={comments}
+									setComments={setComments}></CommentCard>
+							})
+						}
+						<Button
+							onClick={() => setNmbOfCmmnts(nmbOfCmmnts + 5)}
+							className="align-self-center"
+						>Load more comments</Button>
+					</>
+					: <h1>You have no comments yet</h1>}
 			</div>
 		</>
 	);
@@ -105,7 +116,7 @@ function CommentEditor({ comment, comments, setComments, setEditor }
 				if (element.id !== data.id)
 					return (element);
 				return ({
-					...data, 
+					...data,
 					updatedAt: dateFormater(data.updatedAt),
 					createdAt: dateFormater(data.createdAt),
 				});

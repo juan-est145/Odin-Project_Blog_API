@@ -9,20 +9,23 @@ import { Editor } from "primereact/editor";
 import { InputField } from "./PostCreator";
 import { dateFormater } from "../auxFunc";
 import { Toast, ToastMessage } from "primereact/toast";
+import { Button } from "primereact/button";
 
 export function PostEditor() {
 	const [posts, setPosts] = useState<Posts[]>([]);
+	const [nmbOfPosts, setNmbOfPosts] = useState<number>(10);
 	useEffect(() => {
-		const promise = apiClient.GET("/v1/accnt/posts");
+		const promise = apiClient.GET("/v1/accnt/posts", { params: { query: { nmbOfPosts } } });
 		promise.then((element) => setPosts(element.data ? element.data : []))
 			.catch(() => alert("Something went wrong, please try again at a later time"));
-	}, []);
+	}, [nmbOfPosts]);
 
 	return (
 		<>
 			{posts.map((element) => {
 				return <PostCard postData={element} posts={posts} setPosts={setPosts} key={element.id}></PostCard>
 			})}
+			<Button onClick={() => setNmbOfPosts(nmbOfPosts + 5)}>Load more posts</Button>
 		</>
 	);
 }
@@ -32,7 +35,7 @@ function PostCard({ postData, posts, setPosts }: { postData: Posts, posts: Posts
 
 	async function deletePost() {
 		const { data, error } = await apiClient.DELETE("/v1/accnt/posts/{postId}", {
-			params: { path: { postId: postData.id }}
+			params: { path: { postId: postData.id } }
 		});
 		if (data) {
 			const updatedPosts = posts.filter((element) => element.id !== data.id);
