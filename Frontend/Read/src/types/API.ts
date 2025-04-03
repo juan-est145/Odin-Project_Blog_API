@@ -100,22 +100,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/accnt/comments/{commentId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["AccntController_updateComment"];
-        post?: never;
-        delete: operations["AccntController_deleteComment"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/v1/accnt/posts": {
         parameters: {
             query?: never;
@@ -132,6 +116,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/accnt/upgrade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AccntController_getRole"];
+        put?: never;
+        post: operations["AccntController_upgradeAccnt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/accnt/comments/{commentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["AccntController_updateComment"];
+        post?: never;
+        delete: operations["AccntController_deleteComment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/accnt/posts/{postId}": {
         parameters: {
             query?: never;
@@ -142,7 +158,7 @@ export interface paths {
         get?: never;
         put: operations["AccntController_updatePost"];
         post?: never;
-        delete?: never;
+        delete: operations["AccntController_deletePost"];
         options?: never;
         head?: never;
         patch?: never;
@@ -260,10 +276,9 @@ export interface components {
             updatedAt: string;
             postTitle: string;
         };
-        DeleteCommentRes: {
-            /** @example 200 */
-            code: number;
-            message: string;
+        UpgradeAccntRes: {
+            /** @enum {string} */
+            role: "USER" | "POSTER";
         };
         CreatePostBodyDto: {
             title: string;
@@ -274,6 +289,14 @@ export interface components {
              * @enum {string}
              */
             publish: "true" | "false" | "1" | "0";
+        };
+        UpgradeAccntBodyDto: {
+            passCode: string;
+        };
+        DeleteCommentRes: {
+            /** @example 200 */
+            code: number;
+            message: string;
         };
     };
     responses: never;
@@ -563,90 +586,6 @@ export interface operations {
             };
         };
     };
-    AccntController_updateComment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                commentId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostCommentsDto"];
-            };
-        };
-        responses: {
-            /** @description Returns the data of the updated comment */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AccntCommentsDto"];
-                };
-            };
-            /** @description If the request is invalid, it returns the error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
-                };
-            };
-            /** @description Returns an error if not using jwt or an invalid one or if comment id does not belong to the user */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
-                };
-            };
-        };
-    };
-    AccntController_deleteComment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                commentId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns a confirmation message alongside a 200 status code */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeleteCommentRes"];
-                };
-            };
-            /** @description If the request is invalid, it returns the error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
-                };
-            };
-            /** @description Returns an error if not using jwt or an invalid one or if comment id does not belong to the user */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
-                };
-            };
-        };
-    };
     AccntController_getAccntPosts: {
         parameters: {
             query?: {
@@ -732,6 +671,152 @@ export interface operations {
             };
         };
     };
+    AccntController_getRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the current role of the user */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpgradeAccntRes"];
+                };
+            };
+            /** @description Returns if the the user id in the jwt does not exist */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_upgradeAccnt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpgradeAccntBodyDto"];
+            };
+        };
+        responses: {
+            /** @description Returns the new role assigned to the account */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpgradeAccntRes"];
+                };
+            };
+            /** @description Returns an error if the user already has that role, it is not logged in or the passcode is incorrect */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_updateComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostCommentsDto"];
+            };
+        };
+        responses: {
+            /** @description Returns the data of the updated comment */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccntCommentsDto"];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if comment id does not belong to the user */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_deleteComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns a confirmation message alongside a 200 status code */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteCommentRes"];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if comment id does not belong to the user */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
     AccntController_updatePost: {
         parameters: {
             query?: never;
@@ -757,6 +842,46 @@ export interface operations {
             };
             /** @description Returns the updated post */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostDto"];
+                };
+            };
+            /** @description If the request is invalid, it returns the error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvalidRequestErrorDto"];
+                };
+            };
+            /** @description Returns an error if not using jwt or an invalid one or if the user is not a poster */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenRequestErrorDto"];
+                };
+            };
+        };
+    };
+    AccntController_deletePost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the deleted post */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

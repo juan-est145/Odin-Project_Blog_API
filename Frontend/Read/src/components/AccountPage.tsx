@@ -30,7 +30,10 @@ export function LogIn() {
 				redirect("/");
 				return;
 			}
-			const toastOpts: ToastMessage[] = [...error.message.map((element) => Object.assign({}, { severity: "error", summary: element } as ToastMessage))];
+			const toastOpts: ToastMessage[] = error.message instanceof Array ?
+				error.message.map((element) => Object.assign<object, ToastMessage>({}, { severity: "error", summary: element }))
+				:
+				[{ severity: "error", summary: error.message }];
 			return toast.current?.show(toastOpts);
 		} catch {
 			return toast.current?.show(error500Toast);
