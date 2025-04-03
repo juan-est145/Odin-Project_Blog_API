@@ -21,6 +21,16 @@ export class UsersService {
 		}
 	}
 
+	async getUserId(userId: number): Promise<Users | null> {
+		try {
+			return await this.prisma.users.findUnique({
+				where: { id: userId },
+			});
+		} catch {
+			throw new InternalServerErrorException();
+		}
+	}
+
 	async signUser(username: string, password: string): Promise<Users> {
 		try {
 			const result: Users = await this.prisma.users.create({

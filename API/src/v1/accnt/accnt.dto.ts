@@ -112,7 +112,6 @@ export class UpgradeAccntBodyDto {
 export class UpgradeAccntRes {
 	@ApiProperty({
 		enum: ["USER", "POSTER"],
-		description: "The new role assigned to the user",
 	})
-	newRole: Roles;
+	role: Roles;
 }
