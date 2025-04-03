@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Comments } from "@prisma/client";
+import { Comments, Roles } from "@prisma/client";
 import {
 	IsOptional,
 	IsInt,
@@ -102,4 +102,17 @@ export class PostReqParam {
 	@ApiProperty()
 	@IsUUID()
 	postId: string;
+}
+
+export class UpgradeAccntBodyDto {
+	@ApiProperty()
+	passCode: string;
+}
+
+export class UpgradeAccntRes {
+	@ApiProperty({
+		enum: ["USER", "POSTER"],
+		description: "The new role assigned to the user",
+	})
+	newRole: Roles;
 }

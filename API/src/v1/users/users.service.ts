@@ -2,7 +2,10 @@ import { ConflictException, Injectable } from "@nestjs/common";
 import { DbService } from "src/db/db.service";
 import { Users } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { InternalServerErrorException } from "@nestjs/common";
+import {
+	InternalServerErrorException,
+	UnauthorizedException,
+} from "@nestjs/common";
 
 @Injectable()
 export class UsersService {
@@ -17,6 +20,7 @@ export class UsersService {
 			throw new InternalServerErrorException();
 		}
 	}
+
 	async signUser(username: string, password: string): Promise<Users> {
 		try {
 			const result: Users = await this.prisma.users.create({
@@ -32,6 +36,22 @@ export class UsersService {
 				error.code === "P2002"
 			)
 				throw new ConflictException(undefined, "Username is already taken");
+			throw new InternalServerErrorException();
+		}
+	}
+
+	async upgradeAccnt(userId: number) {
+		try {
+			return await this.prisma.users.update({
+				where: { id: userId },
+				data: { role: "POSTER" },
+			});
+		} catch (error) {
+			if (
+				error instanceof PrismaClientKnownRequestError &&
+				error.code === "P2016"
+			)
+				throw new UnauthorizedException();
 			throw new InternalServerErrorException();
 		}
 	}

@@ -7,6 +7,7 @@ import {
 	Param,
 	Put,
 	Body,
+	UnauthorizedException,
 } from "@nestjs/common";
 import { CommentsService } from "../comments/comments.service";
 import {
@@ -16,6 +17,8 @@ import {
 	DeleteCommentRes,
 	PostReqParam,
 	QueryGetCommentsDto,
+	UpgradeAccntBodyDto,
+	UpgradeAccntRes,
 } from "./accnt.dto";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guard/auth.guard";
@@ -32,6 +35,7 @@ import { ForbiddenRequestErrorDto, InvalidRequestErrorDto } from "../v1.dto";
 import { PostCommentsDto, PostDto, QueryGetPostsDto } from "../posts/posts.dto";
 import { PostsService } from "../posts/posts.service";
 import { Roles } from "../auth/auth.decorator";
+import { UsersService } from "../users/users.service";
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
@@ -40,6 +44,7 @@ export class AccntController {
 	constructor(
 		private comment: CommentsService,
 		private post: PostsService,
+		private users: UsersService,
 	) {}
 	@Get("/comments")
 	@ApiOkResponse({
@@ -241,5 +246,26 @@ export class AccntController {
 	})
 	async deletePost(@User() user: JwtPayload, @Param() param: PostReqParam) {
 		return await this.post.deletePost(user.id, param.postId);
+	}
+
+	@Post("/upgrade")
+	@Roles("USER")
+	@ApiCreatedResponse({
+		description: "Returns the new role assigned to the account",
+		type: UpgradeAccntRes,
+	})
+	@ApiForbiddenResponse({
+		description:
+			"Returns an error if the user already has that role, it is not logged in or the passcode is incorrect",
+		type: ForbiddenRequestErrorDto,
+	})
+	async upgradeAccnt(
+		@Body() body: UpgradeAccntBodyDto,
+		@User() user: JwtPayload,
+	): Promise<UpgradeAccntRes> {
+		if (body.passCode !== process.env.UPGRADE_PASSCODE)
+			throw new UnauthorizedException();
+		const { role } = await this.users.upgradeAccnt(user.id);
+		return { newRole: role };
 	}
 }
