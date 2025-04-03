@@ -7,6 +7,7 @@ import {
 	IsUUID,
 	Length,
 	IsBooleanString,
+	IsString,
 } from "class-validator";
 
 export class QueryGetCommentsDto {
@@ -106,6 +107,7 @@ export class PostReqParam {
 
 export class UpgradeAccntBodyDto {
 	@ApiProperty()
+	@IsString()
 	passCode: string;
 }
 

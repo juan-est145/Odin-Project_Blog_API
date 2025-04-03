@@ -7,7 +7,7 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"cwd": "${workspaceFolder}/nest",
+			"cwd": "${workspaceFolder}/API",
 			"name": "Debug Nest Framework",
 			"runtimeExecutable": "npm",
 			"runtimeArgs": [
